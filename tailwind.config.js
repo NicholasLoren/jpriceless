@@ -1,5 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
+import flowbiteReact from "flowbite-react/plugin/tailwindcss";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -8,15 +9,16 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.jsx',
+        '.flowbite-react\\class-list.json',
     ],
 
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Outfit', ...defaultTheme.fontFamily.sans],
             },
         },
     },
 
-    plugins: [forms],
+    plugins: [forms, flowbiteReact],
 };
