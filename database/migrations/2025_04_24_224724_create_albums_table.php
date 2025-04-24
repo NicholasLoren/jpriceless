@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->foreignId('artist_id')->constrained();
+            $table->foreignId('artist_id')->nullable()->constrained();
             $table->foreignId('label_id')->nullable()->constrained();
             $table->foreignId('genre_id')->nullable()->constrained();
             $table->text('description')->nullable();
