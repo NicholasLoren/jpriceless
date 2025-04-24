@@ -1,0 +1,248 @@
+// Example data structure to be used with the AlbumDetail component
+const albumsData = [
+    {
+        id: 1,
+        title: 'Jungle Of More',
+        artist: 'Frau Power',
+        coverArt: '/path/to/jungle-of-more-cover.jpg', // Update with actual path
+        label: 'Dommedia',
+        releaseDate: 'March 16, 2017',
+        genre: 'Funk',
+        description:
+            'Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel.',
+        availableOn: [
+            { name: 'iTunes', url: '#' },
+            { name: 'Google Play', url: '#' },
+        ],
+        tracks: [
+            {
+                id: 'track-1-1',
+                title: 'Dreaming Of Joy',
+                duration: '3:45',
+                audioSrc: '/path/to/dreaming-of-joy.mp3', // Update with actual path
+                purchasable: true,
+            },
+            {
+                id: 'track-1-2',
+                title: 'Broken Song - remix',
+                duration: '4:12',
+                audioSrc: '/path/to/broken-song-remix.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-1-3',
+                title: 'Crazy Circus',
+                duration: '3:28',
+                audioSrc: '/path/to/crazy-circus.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-1-4',
+                title: 'Give Her Shadow',
+                duration: '5:10',
+                audioSrc: '/path/to/give-her-shadow.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-1-5',
+                title: 'Midnight Tales',
+                duration: '3:52',
+                audioSrc: '/path/to/midnight-tales.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-1-6',
+                title: 'Stop Story',
+                duration: '4:25',
+                audioSrc: '/path/to/stop-story.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-1-7',
+                title: 'Unfortunate Rhythm',
+                duration: '3:38',
+                audioSrc: '/path/to/unfortunate-rhythm.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-1-8',
+                title: 'Stairway Of More',
+                duration: '6:20',
+                audioSrc: '/path/to/stairway-of-more.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-1-9',
+                title: 'Hard Tales',
+                duration: '3:15',
+                audioSrc: '/path/to/hard-tales.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-1-10',
+                title: 'Mystery Of Secrets',
+                duration: '4:45',
+                audioSrc: '/path/to/mystery-of-secrets.mp3',
+                purchasable: false,
+            },
+        ],
+    },
+    {
+        id: 2,
+        title: 'Electric Dreams',
+        artist: 'Frau Power',
+        coverArt: '/path/to/electric-dreams-cover.jpg', // Update with actual path
+        label: 'Dommedia',
+        releaseDate: 'June 5, 2018',
+        genre: 'Electronic',
+        description:
+            'Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem.',
+        availableOn: [
+            { name: 'iTunes', url: '#' },
+            { name: 'Google Play', url: '#' },
+            { name: 'Spotify', url: '#' },
+        ],
+        tracks: [
+            {
+                id: 'track-2-1',
+                title: 'Electric Future',
+                duration: '4:10',
+                audioSrc: '/path/to/electric-future.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-2-2',
+                title: 'Neon Lights',
+                duration: '3:55',
+                audioSrc: '/path/to/neon-lights.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-2-3',
+                title: 'Digital Love',
+                duration: '4:30',
+                audioSrc: '/path/to/digital-love.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-2-4',
+                title: 'Virtual Reality',
+                duration: '5:25',
+                audioSrc: '/path/to/virtual-reality.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-2-5',
+                title: 'Dreams In Code',
+                duration: '3:40',
+                audioSrc: '/path/to/dreams-in-code.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-2-6',
+                title: 'Pixel Heaven',
+                duration: '4:15',
+                audioSrc: '/path/to/pixel-heaven.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-2-7',
+                title: 'Cybernetic Soul',
+                duration: '3:50',
+                audioSrc: '/path/to/cybernetic-soul.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-2-8',
+                title: 'Binary Sunset',
+                duration: '4:05',
+                audioSrc: '/path/to/binary-sunset.mp3',
+                purchasable: false,
+            },
+        ],
+    },
+    {
+        id: 3,
+        title: 'Urban Symphony',
+        artist: 'Frau Power',
+        coverArt: '/path/to/urban-symphony-cover.jpg', // Update with actual path
+        label: 'Dommedia',
+        releaseDate: 'November 20, 2019',
+        genre: 'Trip Hop',
+        description:
+            'Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero.',
+        availableOn: [
+            { name: 'iTunes', url: '#' },
+            { name: 'Google Play', url: '#' },
+            { name: 'Spotify', url: '#' },
+            { name: 'Amazon Music', url: '#' },
+        ],
+        tracks: [
+            {
+                id: 'track-3-1',
+                title: 'City Skyline',
+                duration: '4:30',
+                audioSrc: '/path/to/city-skyline.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-3-2',
+                title: 'Midnight Traffic',
+                duration: '3:45',
+                audioSrc: '/path/to/midnight-traffic.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-3-3',
+                title: 'Subway Dreams',
+                duration: '5:15',
+                audioSrc: '/path/to/subway-dreams.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-3-4',
+                title: 'Concrete Jungle',
+                duration: '4:20',
+                audioSrc: '/path/to/concrete-jungle.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-3-5',
+                title: 'Urban Noise',
+                duration: '3:55',
+                audioSrc: '/path/to/urban-noise.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-3-6',
+                title: 'Skyscraper Soul',
+                duration: '4:40',
+                audioSrc: '/path/to/skyscraper-soul.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-3-7',
+                title: 'Street Lights',
+                duration: '3:30',
+                audioSrc: '/path/to/street-lights.mp3',
+                purchasable: true,
+            },
+            {
+                id: 'track-3-8',
+                title: 'Metropolitan Groove',
+                duration: '5:05',
+                audioSrc: '/path/to/metropolitan-groove.mp3',
+                purchasable: false,
+            },
+            {
+                id: 'track-3-9',
+                title: 'Rooftop Echoes',
+                duration: '4:15',
+                audioSrc: '/path/to/rooftop-echoes.mp3',
+                purchasable: true,
+            },
+        ],
+    },
+];
+
+export default albumsData;

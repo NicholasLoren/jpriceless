@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.swiper-button-prev, .swiper-button-next {
+     @apply bg-transparent font-black;
+     color: black !important;
+}

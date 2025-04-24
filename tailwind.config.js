@@ -1,6 +1,6 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
-import flowbiteReact from "flowbite-react/plugin/tailwindcss";
+import flowbiteReact from 'flowbite-react/plugin/tailwindcss';
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -11,7 +11,7 @@ export default {
         './resources/js/**/*.jsx',
         '.flowbite-react\\class-list.json',
     ],
-
+    darkMode: 'class',
     theme: {
         extend: {
             fontFamily: {

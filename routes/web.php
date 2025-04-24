@@ -7,6 +7,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [WebsiteController::class, 'home'])->name('home');
+Route::get('/about', [WebsiteController::class, 'about'])->name('about');
+Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
+Route::get('/tours', [WebsiteController::class, 'tours'])->name('tours'); 
+Route::get('/tours/{tour:slug}', [WebsiteController::class, 'singleTour'])->name('tours.view-single'); 
+Route::get('/gallery', [WebsiteController::class, 'gallery'])->name('gallery'); 
+Route::get('/blogs', [WebsiteController::class, 'blogs'])->name('blogs'); 
+Route::get('/blogs/{blog:slug}', [WebsiteController::class, 'singleBlog'])->name('blogs.view-single'); 
+Route::get('/discography', [WebsiteController::class, 'discography'])->name('discography'); 
 
 
 Route::get('/dashboard', function () {
