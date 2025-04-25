@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('excerpt')->nullable();
-            $table->longText('content'); // For TipTap content, stored as JSON
-            $table->string('featured_image')->nullable();
+            $table->longText('content');  
             $table->foreignId('user_id')->constrained(); // Author
             $table->foreignId('blog_category_id')->nullable()->constrained();
             $table->timestamp('published_at')->nullable();

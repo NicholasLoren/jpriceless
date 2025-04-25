@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\GenreController;
+use App\Http\Controllers\LabelController;
+use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,9 +27,15 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::resource('genres',GenreController::class); 
+    Route::resource('labels',LabelController::class); 
+    Route::resource('platforms',PlatformController::class); 
+    Route::resource('tags',TagController::class); 
 });
 
 require __DIR__ . '/auth.php';

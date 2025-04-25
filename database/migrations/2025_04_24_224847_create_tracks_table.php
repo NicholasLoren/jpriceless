@@ -16,8 +16,7 @@ return new class extends Migration
             $table->foreignId('album_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->integer('track_number');
-            $table->time('duration')->nullable();
-            $table->string('audio_file')->nullable();
+            $table->time('duration')->nullable(); 
             $table->boolean('purchasable')->default(false);
             $table->decimal('price', 8, 2)->nullable();
             $table->boolean('downloadable')->default(false);

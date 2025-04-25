@@ -18,8 +18,7 @@ return new class extends Migration {
             $table->foreignId('label_id')->nullable()->constrained();
             $table->foreignId('genre_id')->nullable()->constrained();
             $table->text('description')->nullable();
-            $table->date('release_date');
-            $table->string('cover_art')->nullable();
+            $table->date('release_date'); 
             $table->boolean('is_featured')->default(false);
             $table->timestamps();
         });

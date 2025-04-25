@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('platforms', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('icon')->nullable();
+            $table->text('website_url')->nullable();
+            $table->text('icon_url')->nullable();
             $table->timestamps();
         });
     }
