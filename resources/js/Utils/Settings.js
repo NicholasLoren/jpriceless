@@ -39,7 +39,7 @@ const settingsOptions = [
         id: 'tags',
         name: 'Tags',
         description: 'Manage tags',
-        url: route('settings.index'),
+        url: route('tags.index'),
         icon: LiaTagSolid,
     },
 ];
