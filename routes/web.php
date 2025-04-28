@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\PlatformController;
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('labels',LabelController::class); 
     Route::resource('platforms',PlatformController::class); 
     Route::resource('tags',TagController::class); 
+    Route::resource('artists',ArtistController::class); 
 });
 
 require __DIR__ . '/auth.php';

@@ -5,6 +5,7 @@ import {
     LiaTheaterMasksSolid,
 } from 'react-icons/lia';
 import { SiMusicbrainz } from 'react-icons/si';
+import { PiUserSoundBold } from "react-icons/pi";
 
 const settingsOptions = [
     {
@@ -41,6 +42,13 @@ const settingsOptions = [
         description: 'Manage tags',
         url: route('tags.index'),
         icon: LiaTagSolid,
+    },
+    {
+        id: 'artists',
+        name: 'Artists',
+        description: 'Manage Artists',
+        url: route('artists.index'),
+        icon: PiUserSoundBold,
     },
 ];
 
