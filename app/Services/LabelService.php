@@ -21,9 +21,33 @@ class LabelService
         return $label->delete();
     }
 
-    public function findAll()
+    public function findAll($perPage = 20, $search = '')
     {
-        return Label::latest()->get();
+        $query = Label::query();
+
+        // Apply search if provided
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('website', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply default sort
+        $query->latest();
+
+        // Get paginated results
+        return $query->paginate($perPage)->through(
+            fn($artist) =>
+            [
+                'id' => $artist->id,
+                'name' => $artist->name,
+                'description' => $artist->description,
+                'website' => $artist->website,
+                'created_at' => $artist->created_at,
+            ]
+        );
     }
 
 }

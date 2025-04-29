@@ -25,7 +25,6 @@ import * as yup from 'yup';
 import { route } from 'ziggy-js';
 
 const Index = ({ artists, artist }) => {
-    const [tableData, setTableData] = useState(artists);
     const isEditing = !!artist?.id;
     const [imagePreview, setImagePreview] = useState(
         artist?.profile_image_url || null,
@@ -121,10 +120,6 @@ const Index = ({ artists, artist }) => {
             reader.readAsDataURL(profileImage);
         }
     }, [profileImage]);
-
-    useEffect(() => {
-        setTableData(artists);
-    }, [artists]);
 
     const [isProcessing, setIsProcessing] = useState(false);
 
@@ -393,19 +388,25 @@ const Index = ({ artists, artist }) => {
                             <h4 className="flex-grow dark:text-white">
                                 Artists
                             </h4>
-                            <Button
-                                size="xs"
-                                as={Link}
-                                href={route('artists.create')}
-                                className="mr-auto gap-2"
-                            >
-                                <span>Create new</span>
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    size="xs"
+                                    as={Link}
+                                    href={route('artists.create')}
+                                    className="gap-2"
+                                >
+                                    <span>Create new</span>
+                                </Button>
+                            </div>
                         </div>
                         <div className="">
                             <AgGridTable
-                                tableData={tableData}
+                                tableData={artists}
                                 colDefs={colDefs}
+                                route={route('artists.index')}
+                                paginated={true}
+                                perPage={20}
+                                dataKey="artists"
                             />
                         </div>
                     </div>

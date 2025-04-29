@@ -21,9 +21,31 @@ class PlatformService
         return $platform->delete();
     }
 
-    public function findAll()
+    public function findAll($perPage = 20, $search = '')
     {
-        return Platform::latest()->get();
+        $query = Platform::query();
+
+        // Apply search if provided
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('website_url', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply default sort
+        $query->latest();
+
+        // Get paginated results
+        return $query->paginate($perPage)->through(function ($artist) {
+            return [
+                'id' => $artist->id,
+                'name' => $artist->name,
+                'website_url' => $artist->website_url,
+                'icon_url' => $artist->icon_url,
+                'created_at' => $artist->created_at,
+            ];
+        });
     }
 
 }

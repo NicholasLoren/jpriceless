@@ -1,17 +1,17 @@
 import AgGridTable from '@/Components/AgGridTable';
 import DeleteIcon from '@/Components/DeleteIcon';
 import EditIcon from '@/Components/EditIcon';
-import ViewIcon from '@/Components/ViewIcon'; 
+import ViewIcon from '@/Components/ViewIcon';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { formatDate } from '@/Utils/Date';
 import { Head, Link } from '@inertiajs/react';
-import { Breadcrumb, Button,BreadcrumbItem } from 'flowbite-react';
+import { Breadcrumb, BreadcrumbItem, Button } from 'flowbite-react';
 import React from 'react';
 import { HiHome } from 'react-icons/hi';
 import { route } from 'ziggy-js';
 
 const Index = ({ roles }) => {
-    const [tableData, setTableData] = React.useState(roles); 
+    const [tableData, setTableData] = React.useState(roles);
     // Column Definitions: Defines & controls grid columns.
     const [colDefs] = React.useState([
         { field: 'name', filter: true },
@@ -27,10 +27,10 @@ const Index = ({ roles }) => {
             filter: false,
             sortable: false,
             cellRenderer: ({ data }) => (
-                <div className="flex h-full items-center gap-3"> 
-                        <ViewIcon route={route('roles.show', data?.id)} /> 
-                        <EditIcon route={route('roles.edit', data?.id)} /> 
-                        <DeleteIcon route={route('users.destroy', user?.id)} /> 
+                <div className="flex h-full items-center gap-3">
+                    <ViewIcon route={route('roles.show', data?.id)} />
+                    <EditIcon route={route('roles.edit', data?.id)} />
+                    <DeleteIcon route={route('users.destroy', user?.id)} />
                 </div>
             ),
         },
@@ -54,15 +54,15 @@ const Index = ({ roles }) => {
             </div>
             <div className="overflow-hidden rounded-md shadow-lg">
                 <div className="flex items-center justify-between bg-white p-2 dark:bg-gray-800">
-                    <h4 className="flex-grow dark:text-white">User roles</h4> 
-                        <Button
-                            size="xs"
-                            as={Link}
-                            href={route('roles.create')}
-                            className="mr-auto gap-2 bg-info"
-                        >
-                            <span>Create new</span>
-                        </Button> 
+                    <h4 className="flex-grow dark:text-white">User roles</h4>
+                    <Button
+                        size="xs"
+                        as={Link}
+                        href={route('roles.create')}
+                        className="bg-info mr-auto gap-2"
+                    >
+                        <span>Create new</span>
+                    </Button>
                 </div>
                 <div className="">
                     <AgGridTable tableData={tableData} colDefs={colDefs} />

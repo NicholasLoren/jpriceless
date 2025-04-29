@@ -246,6 +246,10 @@ const Index = ({ labels, label }) => {
                             <AgGridTable
                                 tableData={tableData}
                                 colDefs={colDefs}
+                                route={route('labels.index')}
+                                paginated={true}
+                                perPage={20}
+                                dataKey="labels"
                             />
                         </div>
                     </div>

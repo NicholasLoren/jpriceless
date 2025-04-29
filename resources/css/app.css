@@ -6,3 +6,11 @@
      @apply bg-transparent font-black;
      color: black !important;
 }
+
+.ag-input-field-input {
+    @apply pl-6 dark:bg-transparent;
+}
+
+.ag-root-wrapper {
+    @apply rounded-none;
+}

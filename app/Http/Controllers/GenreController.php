@@ -17,13 +17,18 @@ class GenreController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search', '');
+
         return Inertia::render('Genres/Index', [
-            'genres' => $this->genreService->findAll(),
+            'genres' => $this->genreService->findAll($perPage, $search),
             'genre' => new Genre
         ]);
     }
+
+    
 
     /**
      * Show the form for creating a new resource.
@@ -50,9 +55,11 @@ class GenreController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Genre $genre)
+    public function edit(Request $request,Genre $genre)
     {
-        return Inertia::render('Genres/Index', ['genres' => $this->genreService->findAll(), 'genre' => $genre]);
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search', '');
+        return Inertia::render('Genres/Index', ['genres' => $this->genreService->findAll($perPage,$search), 'genre' => $genre]);
     }
 
     /**

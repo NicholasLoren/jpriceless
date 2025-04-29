@@ -21,10 +21,12 @@ class PlatformController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search', '');
         return Inertia::render('Platforms/Index', [
-            'platforms' => $this->platformService->findAll(),
+            'platforms' => $this->platformService->findAll($perPage,$search),
             'platform' => new Platform
         ]);
     }
@@ -61,10 +63,12 @@ class PlatformController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Platform $platform)
+    public function edit(Request $request,Platform $platform)
     {
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search', '');
         return Inertia::render('Platforms/Index', [
-            'platforms' => $this->platformService->findAll(),
+            'platforms' => $this->platformService->findAll($perPage,$search),
             'platform' => $platform
         ]);
     }

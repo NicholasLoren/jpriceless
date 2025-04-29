@@ -17,10 +17,12 @@ class TagController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search', '');
         return Inertia::render('Tags/Index', [
-            'tags' => $this->tagService->findAll(),
+            'tags' => $this->tagService->findAll($perPage, $search),
             'tag' => new Tag
         ]);
     }
@@ -53,10 +55,12 @@ class TagController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tag $tag)
+    public function edit(Request $request, Tag $tag)
     {
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search', '');
         return Inertia::render('Tags/Index', [
-            'tags' => $this->tagService->findAll(),
+            'tags' => $this->tagService->findAll($perPage, $search),
             'tag' => $tag
         ]);
     }

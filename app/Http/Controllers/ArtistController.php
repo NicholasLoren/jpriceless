@@ -10,17 +10,20 @@ use Inertia\Inertia;
 
 class ArtistController extends Controller
 {
-
     public function __construct(public ArtistService $artistService)
     {
     }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search', '');
+
         return Inertia::render('Artists/Index', [
-            'artists' => $this->artistService->findAll(),
+            'artists' => $this->artistService->findAllPaginated($perPage, $search),
             'artist' => new Artist
         ]);
     }
@@ -31,7 +34,7 @@ class ArtistController extends Controller
     public function create()
     {
         return Inertia::render('Artists/Index', [
-            'artists' => $this->artistService->findAll(),
+            'artists' => $this->artistService->findAllPaginated(),
             'artist' => new Artist
         ]);
     }
@@ -47,7 +50,6 @@ class ArtistController extends Controller
             'bio' => 'required|min:3|max:255',
             'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-
 
         // Create the artist with the validated data
         $artist = $this->artistService->store([
@@ -67,18 +69,23 @@ class ArtistController extends Controller
             ->with('success', 'Artist created successfully');
     }
 
-
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Artist $artist)
+    public function edit(Request $request, Artist $artist)
     {
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search', '');
+
         return Inertia::render('Artists/Index', [
-            'artists' => $this->artistService->findAll(),
+            'artists' => $this->artistService->findAllPaginated($perPage, $search),
             'artist' => $artist
         ]);
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Artist $artist)
     {
         // Validate the request data
@@ -103,7 +110,6 @@ class ArtistController extends Controller
             $artist->addMediaFromRequest('profile_image')
                 ->toMediaCollection('profile_image');
         }
-
 
         // Redirect with success message
         return redirect()->route('artists.edit', $artist)

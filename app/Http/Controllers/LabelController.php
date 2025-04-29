@@ -17,10 +17,13 @@ class LabelController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search', '');
+
         return Inertia::render('Labels/Index', [
-            'labels' => $this->labelService->findAll(),
+            'labels' => $this->labelService->findAll($perPage, $search),
             'label' => new Label
         ]);
     }
@@ -55,10 +58,12 @@ class LabelController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Label $label)
+    public function edit(Request $request,Label $label)
     {
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search', '');
         return Inertia::render('Labels/Index', [
-            'labels' => $this->labelService->findAll(),
+            'labels' => $this->labelService->findAll($perPage, $search),
             'label' => $label
         ]);
     }
