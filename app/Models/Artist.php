@@ -60,4 +60,28 @@ class Artist extends Model implements HasMedia
     {
         return $this->getFirstMediaUrl('profile_image', 'large');
     }
+
+    // The inverse relationship to tracks
+    public function tracks()
+    {
+        return $this->belongsToMany(Track::class)
+            ->withPivot('role', 'order')
+            ->withTimestamps();
+    }
+
+    // Get all albums that this artist has tracks on
+    public function albums()
+    {
+        return Album::whereHas('tracks.artists', function ($query) {
+            $query->where('artists.id', $this->id);
+        });
+    }
+
+    // Get tracks where this artist is the primary artist
+    public function primaryTracks()
+    {
+        return $this->tracks()
+            ->wherePivot('order', 1)
+            ->orWherePivot('role', 'primary');
+    }
 }

@@ -17,7 +17,10 @@ class GenreService
     public function destroy(Genre $genre){
         return $genre->delete();
     }
- 
+    public function all()
+    {
+        return Genre::orderBy('name')->get();
+    }
 
     public function findAll($perPage = 20, $search = '')
     {

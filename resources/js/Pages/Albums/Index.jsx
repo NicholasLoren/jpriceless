@@ -5,19 +5,38 @@ import ViewIcon from '@/Components/ViewIcon';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { formatDate } from '@/Utils/Date';
 import { Head, Link } from '@inertiajs/react';
-import { Breadcrumb, BreadcrumbItem, Button } from 'flowbite-react';
+import { Avatar, Breadcrumb, BreadcrumbItem, Button } from 'flowbite-react';
 import React from 'react';
 import { HiHome } from 'react-icons/hi';
 import { route } from 'ziggy-js';
 
-const Index = ({ roles }) => {
-    const [tableData, setTableData] = React.useState(roles);
+const Index = ({ albums }) => {
+    const [tableData, setTableData] = React.useState(albums);
     // Column Definitions: Defines & controls grid columns.
     const [colDefs] = React.useState([
-        { field: 'name', filter: true },
+        {
+            headerName: 'Cover Art',
+            cellRenderer: ({ data }) => (
+                <div className="flex h-full items-center">
+                    <Avatar
+                        img={data?.cover_thumbnail}
+                        rounded
+                        alt={data?.title + ' Cover Art'}
+                        size="xs"
+                    />
+                </div>
+            ),
+        },
+        { field: 'title' },
+        { field: 'slug' },
+        { field: 'description' },
+        {
+            field: 'release_date',
+            headerName: 'Release Date',
+            cellRenderer: ({ data }) => formatDate(data?.release_date),
+        },
         {
             field: 'created_at',
-            filter: true,
             headerName: 'Date Created',
             cellRenderer: ({ data }) => formatDate(data?.created_at),
         },
@@ -28,44 +47,51 @@ const Index = ({ roles }) => {
             sortable: false,
             cellRenderer: ({ data }) => (
                 <div className="flex h-full items-center gap-3">
-                    <ViewIcon route={route('roles.show', data?.id)} />
-                    <EditIcon route={route('roles.edit', data?.id)} />
-                    <DeleteIcon route={route('users.destroy', user?.id)} />
+                    <ViewIcon route={route('albums.show', data?.id)} />
+                    <EditIcon route={route('albums.edit', data?.id)} />
+                    <DeleteIcon route={route('albums.destroy', data?.id)} />
                 </div>
             ),
         },
     ]);
 
     React.useEffect(() => {
-        setTableData(roles);
-    }, [roles]);
+        setTableData(albums);
+    }, [albums]);
 
     return (
         <AuthenticatedLayout>
-            <Head title="" />
-            <div className="mb-6 flex items-center md:justify-between">
-                <h4 className="hidden dark:text-white md:block">Roles</h4>
+            <Head title="Albums" />
+            <div className="mx-auto flex max-w-7xl items-center p-4 md:justify-between">
+                <h4 className="hidden dark:text-white md:block">Albums</h4>
                 <Breadcrumb aria-label="App breadcrumb">
                     <BreadcrumbItem icon={HiHome}>
                         <Link href={route('dashboard')}>Home</Link>
                     </BreadcrumbItem>
-                    <BreadcrumbItem>Roles</BreadcrumbItem>
+                    <BreadcrumbItem>Albums</BreadcrumbItem>
                 </Breadcrumb>
             </div>
-            <div className="overflow-hidden rounded-md shadow-lg">
-                <div className="flex items-center justify-between bg-white p-2 dark:bg-gray-800">
-                    <h4 className="flex-grow dark:text-white">User roles</h4>
+            <div className="mx-auto max-w-7xl gap-4 overflow-hidden rounded-md bg-white shadow-lg dark:bg-gray-800">
+                <div className="flex items-center justify-between border-b bg-white p-2 dark:bg-gray-800">
+                    <h4 className="flex-grow dark:text-white">Albums</h4>
                     <Button
                         size="xs"
                         as={Link}
-                        href={route('roles.create')}
-                        className="bg-info mr-auto gap-2"
+                        href={route('albums.create')}
+                        className="mr-auto gap-2"
                     >
                         <span>Create new</span>
                     </Button>
                 </div>
                 <div className="">
-                    <AgGridTable tableData={tableData} colDefs={colDefs} />
+                    <AgGridTable
+                        tableData={tableData}
+                        colDefs={colDefs}
+                        route={route('albums.index')}
+                        paginated={true}
+                        perPage={20}
+                        dataKey="albums"
+                    />
                 </div>
             </div>
         </AuthenticatedLayout>

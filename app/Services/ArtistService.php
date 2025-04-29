@@ -101,4 +101,9 @@ class ArtistService
             'updated_at' => $artist->updated_at,
         ];
     }
+
+    public function all()
+    {
+        return Artist::orderBy('name')->get();
+    }
 }

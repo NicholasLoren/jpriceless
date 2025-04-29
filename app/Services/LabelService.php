@@ -50,4 +50,9 @@ class LabelService
         );
     }
 
+    public function all()
+    {
+        return Label::orderBy('name')->get();
+    }
+
 }

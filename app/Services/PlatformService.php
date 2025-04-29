@@ -48,4 +48,9 @@ class PlatformService
         });
     }
 
+    public function all()
+    {
+        return Platform::orderBy('name')->get();
+    }
+
 }

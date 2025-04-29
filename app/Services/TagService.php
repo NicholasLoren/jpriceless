@@ -46,4 +46,9 @@ class TagService
         });
     }
 
+    public function all()
+    {
+        return Tag::orderBy('name')->get();
+    }
+
 }

@@ -2,34 +2,75 @@
 
 namespace App\Models;
 
+use App\Traits\GeneratesSlug;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Album extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
+    use GeneratesSlug;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'title',
-        'slug',
         'artist_id',
-        'label_id',
         'genre_id',
+        'label_id',
         'description',
-        'release_date',
-        'is_featured'
+        'release_date',  
+        'is_featured',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
     protected $casts = [
         'release_date' => 'date',
-        'is_featured' => 'boolean',
+        'is_featured' => 'boolean', 
     ];
 
-    // Other relationships remain the same...
+    public function slugSourceField()
+    {
+        return 'title';
+    }
 
+    /**
+     * Get the artist that owns the album.
+     */
+    public function artist()
+    {
+        return $this->belongsTo(Artist::class);
+    }
+
+    /**
+     * Get the genre of the album.
+     */
+    public function genre()
+    {
+        return $this->belongsTo(Genre::class);
+    }
+
+    /**
+     * Get the label of the album.
+     */
+    public function label()
+    {
+        return $this->belongsTo(Label::class);
+    }
+
+    /**
+     * Register media collections for the album.
+     */
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('cover_art')

@@ -27,4 +27,26 @@ class Track extends Model implements HasMedia
             ->singleFile()
             ->acceptsMimeTypes(['audio/mpeg', 'audio/wav', 'audio/ogg']);
     }
+
+    public function artists()
+    {
+        return $this->belongsToMany(Artist::class)
+            ->withPivot('role', 'order')
+            ->withTimestamps()
+            ->orderBy('artist_track.order');
+    }
+
+    // Helper method to get primary artist
+    public function primaryArtist()
+    {
+        return $this->artists()->orderBy('artist_track.order')->first();
+    }
+
+    // Helper method to get featured artists
+    public function featuredArtists()
+    {
+        return $this->artists()
+            ->wherePivot('role', 'featured')
+            ->orderBy('artist_track.order');
+    }
 }
