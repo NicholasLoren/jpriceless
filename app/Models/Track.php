@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Track extends Model implements HasMedia
 {
@@ -26,6 +27,18 @@ class Track extends Model implements HasMedia
         $this->addMediaCollection('audio')
             ->singleFile()
             ->acceptsMimeTypes(['audio/mpeg', 'audio/wav', 'audio/ogg']);
+
+        $this->addMediaCollection('cover_art')
+            ->singleFile()
+            ->registerMediaConversions(function (Media $media) {
+                $this->addMediaConversion('thumb')
+                    ->width(300)
+                    ->height(300);
+
+                $this->addMediaConversion('large')
+                    ->width(1200)
+                    ->height(1200);
+            });
     }
 
     public function artists()
@@ -49,4 +62,11 @@ class Track extends Model implements HasMedia
             ->wherePivot('role', 'featured')
             ->orderBy('artist_track.order');
     }
+
+    public function album()
+    {
+        return $this->belongsTo(Album::class);
+    }
+
+    
 }

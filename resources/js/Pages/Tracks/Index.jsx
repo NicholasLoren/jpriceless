@@ -1,40 +1,30 @@
 import AgGridTable from '@/Components/AgGridTable';
-import CustomIconAction from '@/Components/CustomIconAction';
 import DeleteIcon from '@/Components/DeleteIcon';
 import EditIcon from '@/Components/EditIcon';
 import ViewIcon from '@/Components/ViewIcon';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { formatDate } from '@/Utils/Date';
+import { formatDate, formatTime } from '@/Utils/Date';
+import { formatNumber } from '@/Utils/Number';
 import { Head, Link } from '@inertiajs/react';
-import { Avatar, Breadcrumb, BreadcrumbItem, Button } from 'flowbite-react';
+import { Breadcrumb, BreadcrumbItem, Button } from 'flowbite-react';
 import React from 'react';
 import { HiHome } from 'react-icons/hi';
-import { LuListMusic } from 'react-icons/lu';
 import { route } from 'ziggy-js';
-const Index = ({ albums }) => {
-    const [tableData, setTableData] = React.useState(albums);
+
+const Index = ({ tracks, album }) => {
+    const [tableData, setTableData] = React.useState(tracks);
     // Column Definitions: Defines & controls grid columns.
+
     const [colDefs] = React.useState([
-        {
-            headerName: 'Cover Art',
-            cellRenderer: ({ data }) => (
-                <div className="flex h-full items-center">
-                    <Avatar
-                        img={data?.cover_thumbnail}
-                        rounded
-                        alt={data?.title + ' Cover Art'}
-                        size="xs"
-                    />
-                </div>
-            ),
-        },
         { field: 'title' },
-        { field: 'slug' },
-        { field: 'description' },
+        { field: 'track_number', headerName: 'Track Number' },
         {
-            field: 'release_date',
-            headerName: 'Release Date',
-            cellRenderer: ({ data }) => formatDate(data?.release_date),
+            field: 'duration',
+            cellRenderer: ({ data }) => formatTime(data?.duration, 'hh:mm'),
+        },
+        {
+            field: 'price',
+            cellRenderer: ({ data }) => formatNumber(data?.price),
         },
         {
             field: 'created_at',
@@ -48,43 +38,59 @@ const Index = ({ albums }) => {
             sortable: false,
             cellRenderer: ({ data }) => (
                 <div className="flex h-full items-center gap-3">
-                    <ViewIcon route={route('albums.show', data?.id)} />
-                    <CustomIconAction
-                        route={route('albums.tracks.index', {
-                            album: data?.id,
+                    <ViewIcon
+                        route={route('albums.tracks.show', {
+                            album: album?.id,
+                            track: data?.id,
                         })}
-                        icon={LuListMusic}
                     />
-                    <EditIcon route={route('albums.edit', data?.id)} />
-                    <DeleteIcon route={route('albums.destroy', data?.id)} />
+                    <EditIcon
+                        route={route('albums.tracks.edit', {
+                            album: album?.id,
+                            track: data?.id,
+                        })}
+                    />
+                    <DeleteIcon
+                        route={route('albums.tracks.destroy', {
+                            album: album?.id,
+                            track: data?.id,
+                        })}
+                    />
                 </div>
             ),
         },
     ]);
 
     React.useEffect(() => {
-        setTableData(albums);
-    }, [albums]);
+        setTableData(tracks);
+    }, [tracks]);
 
     return (
         <AuthenticatedLayout>
-            <Head title="Albums" />
+            <Head title={`${album?.title} Tracks`} />
             <div className="mx-auto flex max-w-7xl items-center p-4 md:justify-between">
-                <h4 className="hidden dark:text-white md:block">Albums</h4>
+                <h4 className="hidden dark:text-white md:block">
+                    {album?.title}
+                </h4>
                 <Breadcrumb aria-label="App breadcrumb">
                     <BreadcrumbItem icon={HiHome}>
                         <Link href={route('dashboard')}>Home</Link>
                     </BreadcrumbItem>
-                    <BreadcrumbItem>Albums</BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <Link href={route('albums.index')}>Albums</Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem>Tracks</BreadcrumbItem>
                 </Breadcrumb>
             </div>
             <div className="mx-auto max-w-7xl gap-4 overflow-hidden rounded-md bg-white shadow-lg dark:bg-gray-800">
                 <div className="flex items-center justify-between border-b bg-white p-2 dark:bg-gray-800">
-                    <h4 className="flex-grow dark:text-white">Albums</h4>
+                    <h4 className="flex-grow dark:text-white">Tracks</h4>
                     <Button
                         size="xs"
                         as={Link}
-                        href={route('albums.create')}
+                        href={route('albums.tracks.create', {
+                            album: album?.id,
+                        })}
                         className="mr-auto gap-2"
                     >
                         <span>Create new</span>
@@ -94,10 +100,12 @@ const Index = ({ albums }) => {
                     <AgGridTable
                         tableData={tableData}
                         colDefs={colDefs}
-                        route={route('albums.index')}
+                        route={route('albums.tracks.index', {
+                            album: album?.id,
+                        })}
                         paginated={true}
                         perPage={20}
-                        dataKey="albums"
+                        dataKey="tracks"
                     />
                 </div>
             </div>

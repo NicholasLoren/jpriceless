@@ -61,6 +61,7 @@
     "flowbite-react": "^0.11.7",
     "lowlight": "^3.3.0",
     "moment": "^2.30.1",
+    "numeral": "^2.0.6",
     "react-18-image-lightbox": "^5.1.4",
     "react-grid-gallery": "^1.0.1",
     "react-hook-form": "^7.56.0",

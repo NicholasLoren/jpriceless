@@ -282,4 +282,10 @@ return [
      * disabled lazy loading globally in the service provider.
      */
     'force_lazy_loading' => env('FORCE_MEDIA_LIBRARY_LAZY_LOADING', true),
+    /*
+     * Delete all media when the model is deleted.
+     * This is useful when you want to delete all media when the model is deleted.
+     * If you want to keep the media, set this to false.
+     */
+    'delete_associated_media_when_model_is_deleted' => true,
 ];

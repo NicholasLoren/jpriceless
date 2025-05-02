@@ -7,6 +7,7 @@ use App\Http\Controllers\LabelController;
 use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\TrackController;
 use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\SettingController;
 use Illuminate\Foundation\Application;
@@ -40,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('tags',TagController::class); 
     Route::resource('artists',ArtistController::class); 
     Route::resource('albums',AlbumController::class); 
+    Route::resource('albums.tracks',TrackController::class); 
 });
 
 require __DIR__ . '/auth.php';

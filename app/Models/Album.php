@@ -85,4 +85,9 @@ class Album extends Model implements HasMedia
                     ->height(1200);
             });
     }
+
+    public function tracks()
+    {
+        return $this->hasMany(Track::class);
+    }
 }
