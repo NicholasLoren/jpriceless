@@ -79,7 +79,7 @@ class ArtistController extends Controller
 
         return Inertia::render('Artists/Index', [
             'artists' => $this->artistService->findAllPaginated($perPage, $search),
-            'artist' => $artist
+            'artist' => $artist->load('media'), // Load media for the artist
         ]);
     }
 

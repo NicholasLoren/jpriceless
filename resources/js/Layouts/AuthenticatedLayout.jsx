@@ -50,8 +50,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Albums
                                 </NavLink>
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={route('tours.index')}
+                                    active={route().current('tours.index')}
                                 >
                                     Tours
                                 </NavLink>

@@ -21,14 +21,13 @@ return new class extends Migration
             $table->string('city');
             $table->string('country');
             $table->text('address')->nullable();
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
+            $table->integer('latitude')->nullable();
+            $table->integer('longitude')->nullable();
             $table->text('description')->nullable();
             $table->string('ticket_url')->nullable();
             $table->boolean('sold_out')->default(false);
             $table->boolean('free_entry')->default(false);
-            $table->foreignId('organizer_id')->nullable()->constrained('users');
-            $table->string('featured_image')->nullable();
+            $table->text('organizer')->nullable();
             $table->timestamps();
         });
     }

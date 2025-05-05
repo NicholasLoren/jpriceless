@@ -18,7 +18,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('featured_image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

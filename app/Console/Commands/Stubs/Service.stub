@@ -16,7 +16,10 @@ class {{ class }}
 
     }
 
-    public function findAll(){
+    public function findAll($perPage = 20, $search=''){
+
+    }
+    public function all(){
 
     }
 

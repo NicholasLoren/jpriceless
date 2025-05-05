@@ -4,16 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Tour;
 use App\Http\Controllers\Controller;
+use App\Services\TourService;
 use Illuminate\Http\Request;
 
 class TourController extends Controller
 {
+
+    public function __construct(public TourService $tourService)
+    {
+
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return inertia('Tours/Index', [
+            'tours' => $this->tourService->findAll(request()->perPage ?? 20, request()->search),
+        ]);
     }
 
     /**
@@ -21,7 +29,9 @@ class TourController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Tours/Form', [
+            'tour' => new Tour(),
+        ]);
     }
 
     /**
@@ -29,7 +39,20 @@ class TourController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'is_active' => 'boolean',
+            'featured_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $tour = $this->tourService->store($validated);
+        if ($request->hasFile('featured_image')) {
+            $tour->addMedia($request->file('featured_image'))->toMediaCollection('featured_image');
+        }
+        return redirect()->route('tours.edit', $tour)->with('success', 'Tour created successfully!');
     }
 
     /**
@@ -45,7 +68,9 @@ class TourController extends Controller
      */
     public function edit(Tour $tour)
     {
-        //
+        return inertia('Tours/Form', [
+            'tour' => $tour->load('media'),
+        ]);
     }
 
     /**
@@ -53,7 +78,20 @@ class TourController extends Controller
      */
     public function update(Request $request, Tour $tour)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'is_active' => 'boolean',
+            'featured_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $this->tourService->update($validated, $tour);
+        if ($request->hasFile('featured_image')) {
+            $tour->addMedia($request->file('featured_image'))->toMediaCollection('featured_image');
+        }
+        return redirect()->route('tours.edit', $tour)->with('success', 'Tour updated successfully!');
     }
 
     /**
@@ -61,6 +99,7 @@ class TourController extends Controller
      */
     public function destroy(Tour $tour)
     {
-        //
+        $this->tourService->destroy($tour);
+        return redirect()->route('tours.index')->with('success', 'Tour deleted successfully!');
     }
 }

@@ -5,10 +5,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Head, Link, router } from '@inertiajs/react';
 import {
     Breadcrumb,
+    BreadcrumbItem,
     Button,
     HR,
     Label,
     Select,
+    Spinner,
     TextInput,
 } from 'flowbite-react';
 import React from 'react';
@@ -86,15 +88,15 @@ const Form = ({ user, roles }) => {
                     {isEditing ? 'Update user' : 'Create user'}
                 </h4>
                 <Breadcrumb aria-label="App breadcrumb">
-                    <Breadcrumb.Item icon={HiHome}>
+                    <BreadcrumbItem icon={HiHome}>
                         <Link href={route('dashboard')}>Home</Link>
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem>
                         <Link href={route('users.index')}>Users</Link>
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem>
                         {isEditing ? 'Update user' : 'Create user'}
-                    </Breadcrumb.Item>
+                    </BreadcrumbItem>
                 </Breadcrumb>
             </div>
             <div className="bg-white shadow dark:bg-gray-800 sm:rounded-lg">
@@ -232,11 +234,13 @@ const Form = ({ user, roles }) => {
                         )}
 
                         <div className="col-span-1 md:col-span-2 lg:col-span-3">
-                            <Button
-                                className="bg-info"
-                                type="submit"
-                                isProcessing={isProcessing}
-                            >
+                            <Button type="submit" disabled={isProcessing}>
+                                {isProcessing && (
+                                    <Spinner
+                                        className="me-2 self-center"
+                                        size="sm"
+                                    />
+                                )}
                                 Save
                             </Button>
                         </div>
