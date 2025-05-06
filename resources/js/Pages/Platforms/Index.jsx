@@ -120,7 +120,7 @@ const Index = ({ platforms, platform }) => {
 
     return (
         <AuthenticatedLayout>
-            <Head title="Manage Job Seniority" />
+            <Head title="Manage Platform" />
             <div className="mx-auto flex max-w-7xl items-center p-4 md:justify-between">
                 <h4 className="hidden dark:text-white md:block">Platforms</h4>
                 <Breadcrumb aria-platform="App breadcrumb">

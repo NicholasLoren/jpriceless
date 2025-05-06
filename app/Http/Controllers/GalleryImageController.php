@@ -70,7 +70,7 @@ class GalleryImageController extends Controller
         return inertia(
             'GalleryImages/Show',
             [
-                'galleryImage' => $galleryImage,
+                'galleryImage' => $galleryImage->load('media'),
                 'galleryAlbum' => $galleryAlbum
             ]
         );

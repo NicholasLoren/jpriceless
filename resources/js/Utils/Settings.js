@@ -6,6 +6,7 @@ import {
 } from 'react-icons/lia';
 import { SiMusicbrainz } from 'react-icons/si';
 import { PiUserSoundBold } from "react-icons/pi";
+import { TbCategory } from "react-icons/tb";
 
 const settingsOptions = [
     {
@@ -49,6 +50,13 @@ const settingsOptions = [
         description: 'Manage Artists',
         url: route('artists.index'),
         icon: PiUserSoundBold,
+    },
+    {
+        id: 'blogCategories',
+        name: 'Blog Categories',
+        description: 'Manage blog categories',
+        url: route('blog-categories.index'),
+        icon: TbCategory,
     },
 ];
 

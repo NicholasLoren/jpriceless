@@ -94,7 +94,7 @@ const Index = ({ genres, genre }) => {
 
     return (
         <AuthenticatedLayout>
-            <Head title="Manage Job Seniority" />
+            <Head title="Manage Genres" />
             <div className="mx-auto flex max-w-7xl items-center p-4 md:justify-between">
                 <h4 className="hidden dark:text-white md:block">Genres</h4>
                 <Breadcrumb aria-label="App breadcrumb">

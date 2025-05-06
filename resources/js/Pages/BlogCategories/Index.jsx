@@ -14,7 +14,6 @@ import {
     HR,
     Label,
     Spinner,
-    Textarea,
     TextInput,
 } from 'flowbite-react';
 import React from 'react';
@@ -23,24 +22,15 @@ import { HiHome } from 'react-icons/hi';
 import * as yup from 'yup';
 import { route } from 'ziggy-js';
 
-const Index = ({ labels, label }) => {
-    const [tableData, setTableData] = React.useState(labels);
-    const isEditing = !!label?.id;
+const Index = ({ blogCategories, blogCategory }) => {
+    const [tableData, setTableData] = React.useState(blogCategories);
+    const isEditing = !!blogCategory?.id;
 
     // Column Definitions: Defines & controls grid columns.
     const [colDefs] = React.useState([
         { field: 'name' },
         {
-            field: 'website',
-            tooltipValueGetter: (p) => p?.value,
-            cellRenderer: ({ data }) => (
-                <a href={data?.website} target="_blank" rel="noreferrer">
-                    {data?.website}
-                </a>
-            ),
-        },
-        {
-            field: 'description',
+            field: 'slug',
             tooltipValueGetter: (p) => p?.value,
         },
         {
@@ -55,8 +45,8 @@ const Index = ({ labels, label }) => {
             sortable: false,
             cellRenderer: ({ data }) => (
                 <div className="flex h-full items-center gap-3">
-                    <EditIcon route={route('labels.edit', data?.id)} />
-                    <DeleteIcon route={route('labels.destroy', data?.id)} />
+                    <EditIcon route={route('blog-categories.edit', data?.id)} />
+                    <DeleteIcon route={route('blog-categories.destroy', data?.id)} />
                 </div>
             ),
         },
@@ -64,11 +54,6 @@ const Index = ({ labels, label }) => {
 
     const schema = yup.object({
         name: yup.string().required('Name is required'),
-        website: yup
-            .string()
-            .required('Website url is required')
-            .url('Please enter a valid url'),
-        description: yup.string().required('Description is required'),
     });
 
     const {
@@ -78,9 +63,7 @@ const Index = ({ labels, label }) => {
         setError,
     } = useForm({
         defaultValues: {
-            name: label?.name,
-            website: label?.website,
-            description: label?.description,
+            name: blogCategory?.name,
         },
         resolver: yupResolver(schema),
     });
@@ -99,21 +82,21 @@ const Index = ({ labels, label }) => {
         };
 
         if (isEditing) {
-            router.put(route('labels.update', label.id), data, config);
+            router.put(route('blog-categories.update', blogCategory.id), data, config);
         } else {
-            router.post(route('labels.store'), data, config);
+            router.post(route('blog-categories.store'), data, config);
         }
     };
 
     React.useEffect(() => {
-        setTableData(labels);
-    }, [labels]);
+        setTableData(blogCategories);
+    }, [blogCategories]);
 
     return (
         <AuthenticatedLayout>
-            <Head title="Manage Labels" />
+            <Head title="Manage Blog Categories" />
             <div className="mx-auto flex max-w-7xl items-center p-4 md:justify-between">
-                <h4 className="hidden dark:text-white md:block">Labels</h4>
+                <h4 className="hidden dark:text-white md:block">Blog Categories</h4>
                 <Breadcrumb aria-label="App breadcrumb">
                     <BreadcrumbItem icon={HiHome}>
                         <Link href={route('dashboard')}>Home</Link>
@@ -121,7 +104,7 @@ const Index = ({ labels, label }) => {
                     <BreadcrumbItem>
                         <Link href={route('settings.index')}>Settings</Link>
                     </BreadcrumbItem>
-                    <BreadcrumbItem>Labels</BreadcrumbItem>
+                    <BreadcrumbItem>Blog Categories</BreadcrumbItem>
                 </Breadcrumb>
             </div>
             <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 md:grid-cols-12">
@@ -130,8 +113,8 @@ const Index = ({ labels, label }) => {
                         <div className="p-4">
                             <h4 className="dark:text-white">
                                 {isEditing
-                                    ? 'Update label'
-                                    : 'Create a new label.'}
+                                    ? 'Update blog category'
+                                    : 'Create a new blog category.'}
                             </h4>
                         </div>
                         <HR className="my-1" />
@@ -157,50 +140,6 @@ const Index = ({ labels, label }) => {
                                         {errors.name && (
                                             <p className="mt-1 text-xs text-red-500">
                                                 {errors.name.message}
-                                            </p>
-                                        )}
-                                    </HelperText>
-                                </div>
-                                <div className="col-span-1">
-                                    <Label htmlFor="website">
-                                        Website
-                                        <Required />
-                                    </Label>
-                                    <TextInput
-                                        type="url"
-                                        id="website"
-                                        placeholder="Enter url"
-                                        color={errors.name ? 'failure' : 'gray'}
-                                        {...register('website')}
-                                    />
-                                    <HelperText>
-                                        {errors.website && (
-                                            <p className="mt-1 text-xs text-red-500">
-                                                {errors.website.message}
-                                            </p>
-                                        )}
-                                    </HelperText>
-                                </div>
-                                <div className="col-span-1">
-                                    <Label htmlFor="description">
-                                        Description
-                                        <Required />
-                                    </Label>
-                                    <Textarea
-                                        type="text"
-                                        id="description"
-                                        placeholder="Enter description"
-                                        color={
-                                            errors.description
-                                                ? 'failure'
-                                                : 'gray'
-                                        }
-                                        {...register('description')}
-                                    />
-                                    <HelperText>
-                                        {errors.description && (
-                                            <p className="mt-1 text-xs text-red-500">
-                                                {errors.description.message}
                                             </p>
                                         )}
                                     </HelperText>
@@ -231,12 +170,12 @@ const Index = ({ labels, label }) => {
                     <div className="overflow-hidden rounded-md shadow-lg">
                         <div className="flex items-center justify-between bg-white p-2 dark:bg-gray-800">
                             <h4 className="flex-grow dark:text-white">
-                                labels
+                                Blog Categories
                             </h4>
                             <Button
                                 size="xs"
                                 as={Link}
-                                href={route('labels.create')}
+                                href={route('blog-categories.create')}
                                 className="mr-auto gap-2"
                             >
                                 <span>Create new</span>
@@ -246,10 +185,10 @@ const Index = ({ labels, label }) => {
                             <AgGridTable
                                 tableData={tableData}
                                 colDefs={colDefs}
-                                route={route('labels.index')}
+                                route={route('blog-categories.index')}
                                 paginated={true}
                                 perPage={20}
-                                dataKey="labels"
+                                dataKey="blogCategories"
                             />
                         </div>
                     </div>

@@ -4,16 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogCategory;
 use App\Http\Controllers\Controller;
+use App\Services\BlogCategoryService;
 use Illuminate\Http\Request;
 
 class BlogCategoryController extends Controller
 {
+
+    public function __construct(public BlogCategoryService $blogCategoryService)
+    {
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return inertia('BlogCategories/Index', [
+            'blogCategories' => $this->blogCategoryService->findAll(request()->perPage, request()->search),
+            'blogCategory' => new BlogCategory
+        ]);
     }
 
     /**
@@ -21,7 +29,10 @@ class BlogCategoryController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('BlogCategories/Index', [
+            'blogCategories' => $this->blogCategoryService->findAll(request()->perPage, request()->search),
+            'blogCategory' => new BlogCategory
+        ]);
     }
 
     /**
@@ -29,23 +40,24 @@ class BlogCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|min:3|string|max:255'
+        ]);
+
+        $blogCategory = $this->blogCategoryService->store($validated);
+        return redirect()->route('blog-categories.edit', $blogCategory)->with('success', 'Blog category created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(BlogCategory $blogCategory)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(BlogCategory $blogCategory)
     {
-        //
+        return inertia('BlogCategories/Index', [
+            'blogCategories' => $this->blogCategoryService->findAll(request()->perPage, request()->search),
+            'blogCategory' => $blogCategory
+        ]);
     }
 
     /**
@@ -53,7 +65,12 @@ class BlogCategoryController extends Controller
      */
     public function update(Request $request, BlogCategory $blogCategory)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|min:3|string|max:255'
+        ]);
+
+        $this->blogCategoryService->update($validated, $blogCategory);
+        return redirect()->back()->with('success', 'Blog category updated successfully.');
     }
 
     /**
@@ -61,6 +78,7 @@ class BlogCategoryController extends Controller
      */
     public function destroy(BlogCategory $blogCategory)
     {
-        //
+        $this->blogCategoryService->destroy($blogCategory);
+        return redirect()->redirect('blog-categories.index')->with('success', 'Blog categories removed successfully');
     }
 }

@@ -64,8 +64,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Gallery
                                 </NavLink>
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={route('blog-posts.index')}
+                                    active={route().current('blog-posts.index')}
                                 >
                                     Blogs
                                 </NavLink>

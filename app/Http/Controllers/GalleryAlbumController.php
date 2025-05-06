@@ -63,7 +63,12 @@ class GalleryAlbumController extends Controller
      */
     public function show(GalleryAlbum $galleryAlbum)
     {
-        //
+        return inertia(
+            'GalleryAlbums/Show',
+            [
+                'galleryAlbum' => $galleryAlbum->load(['media','images.media'])
+            ]
+        );
     }
 
     /**

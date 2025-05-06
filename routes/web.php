@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\BlogCategoryController;
+use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\GalleryAlbumController;
 use App\Http\Controllers\GalleryImageController;
@@ -39,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::resource('blog-categories',BlogCategoryController::class); 
+    Route::resource('blog-posts',BlogPostController::class); 
     Route::resource('genres',GenreController::class); 
     Route::resource('labels',LabelController::class); 
     Route::resource('platforms',PlatformController::class); 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GeneratesSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -11,6 +12,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class BlogPost extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
+    use GeneratesSlug;
 
     protected $fillable = [
         'title',
@@ -24,7 +26,7 @@ class BlogPost extends Model implements HasMedia
         'meta_title',
         'meta_description'
     ];
- 
+
 
     public function registerMediaCollections(): void
     {
@@ -38,16 +40,16 @@ class BlogPost extends Model implements HasMedia
                 $this->addMediaConversion('large')
                     ->width(1200)
                     ->height(900);
-            });
+            }); 
+    }
 
-        // For additional images within the blog content
-        $this->addMediaCollection('content_images')
-            ->registerMediaConversions(function (Media $media) {
-                $this->addMediaConversion('thumb')
-                    ->width(400);
+    public function blogCategory()
+    {
+        return $this->belongsTo(BlogCategory::class, 'blog_category_id');
+    }
 
-                $this->addMediaConversion('medium')
-                    ->width(800);
-            });
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
