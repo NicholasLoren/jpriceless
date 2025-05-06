@@ -56,8 +56,10 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Tours
                                 </NavLink>
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={route('gallery-albums.index')}
+                                    active={route().current(
+                                        'gallery-albums.index',
+                                    )}
                                 >
                                     Gallery
                                 </NavLink>

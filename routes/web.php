@@ -3,6 +3,8 @@
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\GalleryAlbumController;
+use App\Http\Controllers\GalleryImageController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\PlatformController;
@@ -46,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('artists',ArtistController::class); 
     Route::resource('albums',AlbumController::class); 
     Route::resource('albums.tracks',TrackController::class); 
+    Route::resource('gallery-albums',GalleryAlbumController::class); 
+    Route::resource('gallery-albums.gallery-images',GalleryImageController::class); 
 });
 
 require __DIR__ . '/auth.php';

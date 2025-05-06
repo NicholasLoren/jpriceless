@@ -4,16 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\GalleryAlbum;
 use App\Http\Controllers\Controller;
+use App\Services\GalleryAlbumService;
 use Illuminate\Http\Request;
 
 class GalleryAlbumController extends Controller
 {
+
+    public function __construct(public GalleryAlbumService $galleryAlbumService)
+    {
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return inertia(
+            'GalleryAlbums/Index',
+            [
+                'galleryAlbums' => $this->galleryAlbumService->findAll(request()->perPage, request()->search)
+            ]
+        );
     }
 
     /**
@@ -21,7 +31,12 @@ class GalleryAlbumController extends Controller
      */
     public function create()
     {
-        //
+        return inertia(
+            'GalleryAlbums/Form',
+            [
+                'galleryAlbum' => new GalleryAlbum
+            ]
+        );
     }
 
     /**
@@ -29,7 +44,18 @@ class GalleryAlbumController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string', 
+            'is_public' => 'boolean',
+            'cover_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $galleryAlbum = $this->galleryAlbumService->store($validated);
+        if ($request->hasFile('cover_image')) {
+            $galleryAlbum->addMedia($request->file('cover_image'))->toMediaCollection('cover_image');
+        }
+        return redirect()->route('gallery-albums.edit', $galleryAlbum)->with('success', 'Gallery album created successfully!');
     }
 
     /**
@@ -45,7 +71,12 @@ class GalleryAlbumController extends Controller
      */
     public function edit(GalleryAlbum $galleryAlbum)
     {
-        //
+        return inertia(
+            'GalleryAlbums/Form',
+            [
+                'galleryAlbum' => $galleryAlbum->load('media')
+            ]
+        );
     }
 
     /**
@@ -53,7 +84,18 @@ class GalleryAlbumController extends Controller
      */
     public function update(Request $request, GalleryAlbum $galleryAlbum)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string', 
+            'is_public' => 'boolean',
+            'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $this->galleryAlbumService->update($validated, $galleryAlbum);
+        if ($request->hasFile('cover_image')) {
+            $galleryAlbum->addMedia($request->file('cover_image'))->toMediaCollection('cover_image');
+        }
+        return redirect()->route('gallery-albums.edit', $galleryAlbum)->with('success', 'Gallery albums updated successfully!');
     }
 
     /**
@@ -61,6 +103,7 @@ class GalleryAlbumController extends Controller
      */
     public function destroy(GalleryAlbum $galleryAlbum)
     {
-        //
+        $this->galleryAlbumService->destroy($galleryAlbum);
+        return redirect()->back()->with('success', 'Gallery album removed successfully');
     }
 }

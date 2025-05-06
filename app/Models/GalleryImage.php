@@ -15,13 +15,8 @@ class GalleryImage extends Model implements HasMedia
     protected $fillable = [
         'gallery_album_id',
         'title',
-        'description',
-        'sort_order'
-    ];
-
-    protected $casts = [
-        'sort_order' => 'integer',
-    ];
+        'description', 
+    ]; 
 
     public function album()
     {

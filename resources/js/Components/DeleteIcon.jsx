@@ -36,7 +36,7 @@ const DeleteIcon = ({ route }) => {
     return (
         <>
             <MdDelete
-                className="cursor-pointer self-center text-lg hover:text-red-600"
+                className="cursor-pointer self-center text-md hover:text-red-600"
                 onClick={() => setOpenModal(true)}
             />
             <Modal

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GeneratesSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -11,6 +12,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class GalleryAlbum extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
+    use GeneratesSlug;
 
     protected $fillable = [
         'title',
