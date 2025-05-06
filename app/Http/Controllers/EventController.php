@@ -18,7 +18,7 @@ class EventController extends Controller
     public function index(Tour $tour)
     {
         return inertia('Events/Index', [
-            'events' => $this->eventService->findAll(request()->perPage ?? 20, request()->search),
+            'events' => $this->eventService->findAll(request()->per_page ?? 20, request()->search),
             'tour' => $tour,
         ]);
     }

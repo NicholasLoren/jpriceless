@@ -21,7 +21,7 @@ class GalleryAlbumController extends Controller
         return inertia(
             'GalleryAlbums/Index',
             [
-                'galleryAlbums' => $this->galleryAlbumService->findAll(request()->perPage, request()->search)
+                'galleryAlbums' => $this->galleryAlbumService->findAll(request()->per_page, request()->search)
             ]
         );
     }

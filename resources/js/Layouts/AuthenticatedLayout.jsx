@@ -70,8 +70,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Blogs
                                 </NavLink>
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={route('contact-forms.index')}
+                                    active={route().current('contact-forms.index')}
                                 >
                                     Contact Forms
                                 </NavLink>

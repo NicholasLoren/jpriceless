@@ -16,19 +16,19 @@ use App\Http\Controllers\TourController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\SettingController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\ContactFormController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [WebsiteController::class, 'home'])->name('home');
 Route::get('/about', [WebsiteController::class, 'about'])->name('about');
 Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
-Route::get('/all-tours', [WebsiteController::class, 'tours'])->name('tours'); 
-Route::get('/all-tours/{tour:slug}', [WebsiteController::class, 'singleTour'])->name('tours.view-single'); 
-Route::get('/gallery', [WebsiteController::class, 'gallery'])->name('gallery'); 
-Route::get('/blogs', [WebsiteController::class, 'blogs'])->name('blogs'); 
-Route::get('/blogs/{blog:slug}', [WebsiteController::class, 'singleBlog'])->name('blogs.view-single'); 
-Route::get('/discography', [WebsiteController::class, 'discography'])->name('discography'); 
+Route::get('/all-tours', [WebsiteController::class, 'tours'])->name('tours');
+Route::get('/all-tours/{tour:slug}', [WebsiteController::class, 'singleTour'])->name('tours.view-single');
+Route::get('/gallery', [WebsiteController::class, 'gallery'])->name('gallery');
+Route::get('/blogs', [WebsiteController::class, 'blogs'])->name('blogs');
+Route::get('/blogs/{blog:slug}', [WebsiteController::class, 'singleBlog'])->name('blogs.view-single');
+Route::get('/discography', [WebsiteController::class, 'discography'])->name('discography');
 
 
 Route::get('/dashboard', function () {
@@ -40,20 +40,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::put('contact-forms/{contact_form}/mark-as-spam', [ContactFormController::class, 'markAsSpam'])
+        ->name('contact-forms.mark-as-spam');
 
-    Route::resource('blog-categories',BlogCategoryController::class); 
-    Route::resource('blog-posts',BlogPostController::class); 
-    Route::resource('genres',GenreController::class); 
-    Route::resource('labels',LabelController::class); 
-    Route::resource('platforms',PlatformController::class); 
-    Route::resource('tags',TagController::class); 
-    Route::resource('tours',TourController::class); 
-    Route::resource('tours.events',EventController::class); 
-    Route::resource('artists',ArtistController::class); 
-    Route::resource('albums',AlbumController::class); 
-    Route::resource('albums.tracks',TrackController::class); 
-    Route::resource('gallery-albums',GalleryAlbumController::class); 
-    Route::resource('gallery-albums.gallery-images',GalleryImageController::class); 
+    Route::post('contact-forms/{contact_form}/reply', [ContactFormController::class, 'storeReply'])
+        ->name('contact-forms.reply.store');
+
+    Route::resource('blog-categories', BlogCategoryController::class);
+    Route::resource('blog-posts', BlogPostController::class);
+    Route::resource('contact-forms', ContactFormController::class);
+    Route::resource('genres', GenreController::class);
+    Route::resource('labels', LabelController::class);
+    Route::resource('platforms', PlatformController::class);
+    Route::resource('tags', TagController::class);
+    Route::resource('tours', TourController::class);
+    Route::resource('tours.events', EventController::class);
+    Route::resource('artists', ArtistController::class);
+    Route::resource('albums', AlbumController::class);
+    Route::resource('albums.tracks', TrackController::class);
+    Route::resource('gallery-albums', GalleryAlbumController::class);
+    Route::resource('gallery-albums.gallery-images', GalleryImageController::class);
 });
 
 require __DIR__ . '/auth.php';

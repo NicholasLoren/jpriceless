@@ -20,7 +20,7 @@ class TourController extends Controller
     public function index()
     {
         return inertia('Tours/Index', [
-            'tours' => $this->tourService->findAll(request()->perPage ?? 20, request()->search),
+            'tours' => $this->tourService->findAll(request()->per_page ?? 20, request()->search),
         ]);
     }
 

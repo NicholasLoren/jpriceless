@@ -23,7 +23,7 @@ class BlogPostController extends Controller
         return inertia(
             'BlogPosts/Index',
             [
-                'blogPosts' => $this->blogPostService->findAll(request()->perPage, request()->search)
+                'blogPosts' => $this->blogPostService->findAll(request()->per_page, request()->search)
             ]
         );
     }

@@ -23,7 +23,7 @@ class GalleryImageController extends Controller
             'GalleryImages/Index',
             [
                 'galleryAlbum' => $galleryAlbum,
-                'galleryImages' => $this->galleryImageService->findAll($galleryAlbum, request()->perPage, request()->search )
+                'galleryImages' => $this->galleryImageService->findAll($galleryAlbum, request()->per_page, request()->search )
             ]
         );
     }

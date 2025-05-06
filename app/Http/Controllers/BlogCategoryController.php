@@ -19,7 +19,7 @@ class BlogCategoryController extends Controller
     public function index()
     {
         return inertia('BlogCategories/Index', [
-            'blogCategories' => $this->blogCategoryService->findAll(request()->perPage, request()->search),
+            'blogCategories' => $this->blogCategoryService->findAll(request()->per_page, request()->search),
             'blogCategory' => new BlogCategory
         ]);
     }
@@ -30,7 +30,7 @@ class BlogCategoryController extends Controller
     public function create()
     {
         return inertia('BlogCategories/Index', [
-            'blogCategories' => $this->blogCategoryService->findAll(request()->perPage, request()->search),
+            'blogCategories' => $this->blogCategoryService->findAll(request()->per_page, request()->search),
             'blogCategory' => new BlogCategory
         ]);
     }
@@ -55,7 +55,7 @@ class BlogCategoryController extends Controller
     public function edit(BlogCategory $blogCategory)
     {
         return inertia('BlogCategories/Index', [
-            'blogCategories' => $this->blogCategoryService->findAll(request()->perPage, request()->search),
+            'blogCategories' => $this->blogCategoryService->findAll(request()->per_page, request()->search),
             'blogCategory' => $blogCategory
         ]);
     }
