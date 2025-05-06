@@ -4,6 +4,7 @@ use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogPostController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\GalleryAlbumController;
 use App\Http\Controllers\GalleryImageController;
@@ -31,9 +32,7 @@ Route::get('/blogs/{blog:slug}', [WebsiteController::class, 'singleBlog'])->name
 Route::get('/discography', [WebsiteController::class, 'discography'])->name('discography');
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
