@@ -30,8 +30,7 @@ class BlogPostService
                     ->orWhere('excerpt', 'like', "%{$search}%")
                     ->orWhere('content', 'like', "%{$search}%")
                     ->orWhere('meta_title', 'like', "%{$search}%")
-                    ->orWhere('meta_description', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('meta_description', 'like', "%{$search}%");
             })
             ->orderBy('created_at', 'desc')
             ->paginate($perPage)

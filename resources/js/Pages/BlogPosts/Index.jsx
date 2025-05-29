@@ -15,7 +15,7 @@ const Index = ({ blogPosts }) => {
     const [tableData, setTableData] = React.useState(blogPosts);
     // Column Definitions: Defines & controls grid columns.
     const [colDefs] = React.useState([
-        { field: 'title' },
+        { field: 'title'  },
         {headerName:'Category', cellRenderer: ({data})=> data?.blog_category?.name },
         {headerName:'Created By', cellRenderer: ({data})=> data?.user?.name },
         {

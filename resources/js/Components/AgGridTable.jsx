@@ -1,24 +1,26 @@
 import { colDefaults, useAgGridTheme } from '@/Utils/agGridModules';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { AgGridReact } from 'ag-grid-react';
 import { Select, TextInput } from 'flowbite-react';
 import { debounce } from 'lodash';
-import { useCallback, useMemo, useRef, useState } from 'react';
-
+import { useCallback, useMemo, useRef, useState } from 'react'; 
+import {route as ziggyRouter} from 'ziggy-js';
 const AgGridTable = ({
     tableData,
     colDefs,
     route,
-    params = {},
-    initialPage = 1,
-    initialPerPage = 20,
+    params = {}, 
     dataKey = 'tableData',
     onDataChange = null,
 }) => {
     const tableTheme = useAgGridTheme();
+    const routeParams = (ziggyRouter().params);
+    const initialPerPage = routeParams.per_page || 10
+    const initialPage = routeParams.page || 1
+    const searchKeyword = routeParams.search || ''
     const gridRef = useRef(null);
     const [gridApi, setGridApi] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(searchKeyword);
     const [perPage, setPerPage] = useState(initialPerPage);
     const [filterModel, setFilterModel] = useState({}); // Store filter state
 
@@ -141,11 +143,7 @@ const AgGridTable = ({
                 paginationPageSize={paginationInfo.perPage}
                 domLayout="autoHeight"
                 animateRows={true}
-                defaultColDef={{
-                    ...colDefaults,
-                    sortable: true, // Enable sorting
-                    filter: true, // Enable filtering
-                }}
+                defaultColDef={colDefaults}
                 onGridReady={onGridReady} // Capture sort events
                 onFilterChanged={onFilterChanged} // Capture filter events
                 theme={tableTheme}

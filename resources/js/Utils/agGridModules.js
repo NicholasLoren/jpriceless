@@ -28,7 +28,7 @@ ModuleRegistry.registerModules([
 ]);
 export const colDefaults = {
     resizable: true,
-    filter: true,
+    filter: false,
     sortable: true,
     flex: 1,
     minWidth: 100,

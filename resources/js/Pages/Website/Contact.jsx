@@ -1,20 +1,74 @@
 import WebsiteLayout from '@/Layouts/WebsiteLayout';
-import { Head } from '@inertiajs/react';
+import { Head,router } from '@inertiajs/react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { route } from 'ziggy-js';
+import {useState} from 'react'
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    Button,
+    HelperText,
+    HR,
+    Label,
+    Spinner,
+    TextInput,
+    Textarea
+} from 'flowbite-react';
+import Required from '@/Components/Required';
+
+
 const ContactPage = () => {
+
+    const schema = yup.object({
+            name: yup.string().required('Name is required'),
+            email: yup.string().email().required('Email is required'),
+            subject: yup.string().required('Subject is required'),
+            message: yup.string().required('Message is required'),
+        });
+    
+        const {
+            register,
+            handleSubmit,
+            formState: { errors },
+            setError,
+            reset
+        } = useForm({ 
+            resolver: yupResolver(schema),
+        });
+    
+        const [isProcessing, setIsProcessing] = useState(false);
+        const onSubmit = (data) => {
+            const config = {
+                preserveScroll: true,
+                onBefore: () => setIsProcessing(true),
+                onError: (errors) => {
+                    for (const [key, message] of Object.entries(errors)) {
+                        setError(key, { message });
+                    }
+                },
+                onFinish: () =>{
+                    setIsProcessing(false)
+                    reset()
+                },
+            }; 
+            router.post(route('contact.store'), data, config);
+        };
     return (
         <WebsiteLayout>
             <Head title="Contact Me"/>
             {/* Hero Section with Background Image */}
-            <div className="relative h-64 overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600">
+            <div className="relative h-72 overflow-hidden ">
                 <img
-                    src="https://picsum.photos/id/500/1600/500"
+                    src="/images/contact.jpg"
                     alt="Colorful graffiti wall"
                     className="absolute inset-0 h-full w-full object-cover opacity-80 mix-blend-multiply"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-30"></div>
                 <div className="container relative mx-auto flex h-full items-center justify-center px-6">
                     <h1 className="text-4xl font-bold text-white md:text-5xl">
-                        Contact Us
+                        Give Us
                     </h1>
                 </div>
             </div>
@@ -180,38 +234,107 @@ const ContactPage = () => {
                         <h2 className="mb-6 text-2xl font-bold">
                             Send Us a Message
                         </h2>
-                        <form className="space-y-4">
-                            <div>
-                                <input
+                        <form className="space-y-4" 
+                                onSubmit={handleSubmit(onSubmit)}>
+                            <div className="col-span-1">
+                                <Label htmlFor="name">
+                                    Name
+                                    <Required />
+                                </Label>
+                                <TextInput
                                     type="text"
-                                    placeholder="Your Name"
-                                    className="w-full rounded-md border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    id="name"
+                                    placeholder="Enter your name"
+                                    color={errors.name ? 'failure' : 'gray'}
+                                    {...register('name')}
                                 />
+                                <HelperText>
+                                    {errors.name && (
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {errors.name.message}
+                                        </p>
+                                    )}
+                                </HelperText>
                             </div>
-
-                            <div>
-                                <input
-                                    type="email"
-                                    placeholder="Your Email"
-                                    className="w-full rounded-md border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            <div className="col-span-1">
+                                <Label htmlFor="email">
+                                    Email
+                                    <Required />
+                                </Label>
+                                <TextInput
+                                    type="text"
+                                    id="email"
+                                    placeholder="Enter your email address"
+                                    color={errors.email ? 'failure' : 'gray'}
+                                    {...register('email')}
                                 />
+                                <HelperText>
+                                    {errors.email && (
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {errors.email.message}
+                                        </p>
+                                    )}
+                                </HelperText>
+                            </div>
+                            <div className="col-span-1">
+                                <Label htmlFor="subject">
+                                    Subject
+                                    <Required />
+                                </Label>
+                                <TextInput
+                                    type="text"
+                                    id="subject"
+                                    placeholder="Provide a subject"
+                                    color={errors.subject ? 'failure' : 'gray'}
+                                    {...register('subject')}
+                                />
+                                <HelperText>
+                                    {errors.subject && (
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {errors.subject.message}
+                                        </p>
+                                    )}
+                                </HelperText>
+                            </div>
+                            <div className="col-span-1">
+                                <Label htmlFor="message">
+                                    Message
+                                    <Required />
+                                </Label>
+                                <Textarea
+                                    type="text"
+                                    id="message"
+                                    placeholder="Enter a message"
+                                    color={errors.message ? 'failure' : 'gray'}
+                                    {...register('message')}
+                                />
+                                <HelperText>
+                                    {errors.message && (
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {errors.message.message}
+                                        </p>
+                                    )}
+                                </HelperText>
                             </div>
 
-                            <div>
-                                <textarea
-                                    placeholder="Your Message"
-                                    rows="6"
-                                    className="w-full rounded-md border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                ></textarea>
-                            </div>
+                             
 
                             <div>
-                                <button
+                                <Button
                                     type="submit"
                                     className="bg-black px-8 py-3 font-medium text-white transition duration-300 hover:bg-gray-800"
+                                    disabled={isProcessing}
                                 >
+                                    {isProcessing && (
+                                        <Spinner
+                                            size="sm"
+                                            aria-label="Processing form"
+                                            className="me-3"
+                                            light
+                                        />
+                                    )}
                                     Send Message
-                                </button>
+                                </Button>
                             </div>
                         </form>
                     </div>

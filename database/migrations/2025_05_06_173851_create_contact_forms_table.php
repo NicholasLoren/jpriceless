@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('contact_forms', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->string('subject');
             $table->text('message');
             $table->enum('status', ['pending', 'replied','spam'])->default('pending');

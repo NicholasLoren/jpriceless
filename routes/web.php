@@ -18,12 +18,12 @@ use App\Http\Controllers\TrackController;
 use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ContactFormController;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Route; 
 
 Route::get('/', [WebsiteController::class, 'home'])->name('home');
 Route::get('/about', [WebsiteController::class, 'about'])->name('about');
 Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
+Route::post('/contact', [WebsiteController::class, 'storeContact'])->name('contact.store');
 Route::get('/all-tours', [WebsiteController::class, 'tours'])->name('tours');
 Route::get('/all-tours/{tour:slug}', [WebsiteController::class, 'singleTour'])->name('tours.view-single');
 Route::get('/gallery', [WebsiteController::class, 'gallery'])->name('gallery');

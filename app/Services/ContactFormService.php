@@ -28,6 +28,7 @@ class ContactFormService
             ->orWhere('email', 'like', "%$search%")
             ->orWhere('subject', 'like', "%$search%")
             ->orWhere('message', 'like', "%$search%")
+            ->orWhere('status', 'like', "%$search%")
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
