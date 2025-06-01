@@ -19,12 +19,12 @@ import {
     TextInput,
 } from 'flowbite-react';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form'; // Added Controller
-import { HiHome } from 'react-icons/hi';
+import { Controller, useForm, useFieldArray } from 'react-hook-form';
+import { HiHome, HiPlus, HiTrash } from 'react-icons/hi';
 import * as yup from 'yup';
 import { route } from 'ziggy-js';
 
-const Form = ({ album, artists, genres, labels }) => {
+const Form = ({ album, artists, genres, labels, platforms }) => {
     const isEditing = !!album?.id;
 
     const schema = yup.object({
@@ -38,12 +38,21 @@ const Form = ({ album, artists, genres, labels }) => {
             .typeError('Please enter a valid date'),
         is_featured: yup.boolean().required(),
         description: yup.string().required(),
+        platforms: yup
+            .array()
+            .of(
+                yup.object({
+                    platform_id: yup.string().required('Platform is required'),
+                    url: yup.string().url('Invalid URL').required('URL is required'),
+                })
+            )
+            .min(1, 'At least one platform is required'),
         cover_art: isEditing
             ? yup
                   .mixed()
                   .nullable()
                   .test('fileType', 'Only image files are allowed', (value) => {
-                      if (!value || value.length === 0) return true; // Allow empty on edit
+                      if (!value || value.length === 0) return true;
                       return (
                           value &&
                           [
@@ -55,7 +64,7 @@ const Form = ({ album, artists, genres, labels }) => {
                       );
                   })
                   .test('fileSize', 'Image must be less than 1MB', (value) => {
-                      if (!value || value.length === 0) return true; // Allow empty on edit
+                      if (!value || value.length === 0) return true;
                       return value && value[0]?.size <= 1 * 1024 * 1024;
                   })
             : yup
@@ -82,7 +91,8 @@ const Form = ({ album, artists, genres, labels }) => {
         handleSubmit,
         formState: { errors },
         setError,
-        control, // Added for Controller
+        control,
+        watch,
     } = useForm({
         defaultValues: {
             title: album?.title || '',
@@ -92,9 +102,15 @@ const Form = ({ album, artists, genres, labels }) => {
             release_date: formatDate(album?.release_date, 'YYYY-MM-DD') || '',
             is_featured: album?.is_featured || false,
             description: album?.description || '',
+            platforms: album?.selected_platforms || [{ platform_id: '', url: '' }],
             cover_art: null,
         },
         resolver: yupResolver(schema),
+    });
+
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'platforms',
     });
 
     const [isProcessing, setIsProcessing] = useState(false);
@@ -113,9 +129,15 @@ const Form = ({ album, artists, genres, labels }) => {
 
         // Append form fields to FormData (excluding cover_art)
         Object.keys(formattedData).forEach((key) => {
-            if (key !== 'cover_art') {
+            if (key !== 'cover_art' && key !== 'platforms') {
                 formData.append(key, formattedData[key]);
             }
+        });
+
+        // Append platforms data
+        formattedData.platforms.forEach((platform, index) => {
+            formData.append(`platforms[${index}][platform_id]`, platform.platform_id);
+            formData.append(`platforms[${index}][url]`, platform.url);
         });
 
         // Append cover_art if selected
@@ -137,7 +159,6 @@ const Form = ({ album, artists, genres, labels }) => {
                 }
             },
             onFinish: () => setIsProcessing(false),
-            // Important: For file uploads, must include these options
             forceFormData: true,
         };
 
@@ -148,6 +169,16 @@ const Form = ({ album, artists, genres, labels }) => {
             });
         } else {
             router.post(route('albums.store'), formData, config);
+        }
+    };
+
+    const addPlatform = () => {
+        append({ platform_id: '', url: '' });
+    };
+
+    const removePlatform = (index) => {
+        if (fields.length > 1) {
+            remove(index);
         }
     };
 
@@ -342,6 +373,86 @@ const Form = ({ album, artists, genres, labels }) => {
                                     </p>
                                 )}
                             </div>
+
+                            {/* Platforms Section */}
+                            <div className="col-span-1 md:col-span-2 lg:col-span-3">
+                                <div className="mb-4 flex items-center justify-between">
+                                    <Label>
+                                        Platforms
+                                        <Required />
+                                    </Label>
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        color="blue"
+                                        onClick={addPlatform}
+                                    >
+                                        <HiPlus className="mr-1 h-3 w-3" />
+                                        Add Platform
+                                    </Button>
+                                </div>
+                                
+                                {fields.map((field, index) => (
+                                    <div key={field.id} className="mb-4 flex items-start gap-2">
+                                        <div className="flex-1">
+                                            <Select
+                                                theme={inputTheme}
+                                                {...register(`platforms.${index}.platform_id`)}
+                                                color={
+                                                    errors.platforms?.[index]?.platform_id ? 'failure' : 'gray'
+                                                }
+                                            >
+                                                <option value="">Select Platform</option>
+                                                {platforms?.map((platform) => (
+                                                    <option
+                                                        value={platform?.id}
+                                                        key={platform?.id}
+                                                    >
+                                                        {platform?.name}
+                                                    </option>
+                                                ))}
+                                            </Select>
+                                            {errors.platforms?.[index]?.platform_id && (
+                                                <p className="mt-1 text-xs text-red-500">
+                                                    {errors.platforms[index].platform_id.message}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div className="flex-1">
+                                            <TextInput
+                                                type="url"
+                                                placeholder="Enter platform URL"
+                                                color={
+                                                    errors.platforms?.[index]?.url ? 'failure' : 'gray'
+                                                }
+                                                {...register(`platforms.${index}.url`)}
+                                            />
+                                            {errors.platforms?.[index]?.url && (
+                                                <p className="mt-1 text-xs text-red-500">
+                                                    {errors.platforms[index].url.message}
+                                                </p>
+                                            )}
+                                        </div>
+                                        {fields.length > 1 && (
+                                            <Button
+                                                type="button"
+                                                size="sm"
+                                                color="failure"
+                                                onClick={() => removePlatform(index)}
+                                            >
+                                                <HiTrash className="h-3 w-3" />
+                                            </Button>
+                                        )}
+                                    </div>
+                                ))}
+                                
+                                {errors.platforms && typeof errors.platforms.message === 'string' && (
+                                    <p className="mt-1 text-xs text-red-500">
+                                        {errors.platforms.message}
+                                    </p>
+                                )}
+                            </div>
+
                             <div className="col-span-1 md:col-span-2 lg:col-span-3">
                                 <Label htmlFor="cover_art">
                                     Cover Art

@@ -1,7 +1,9 @@
 import WebsiteLayout from "@/Layouts/WebsiteLayout";
+import {Head} from "@inertiajs/react";
 const About = () => {
     return (
-        <WebsiteLayout>
+        <WebsiteLayout  headerPosition={'relative'}>
+            <Head title="About" />
             <div className="container mx-auto px-4 py-12">
                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
                     {/* Left Column - Artist Image with Decorative Elements */}
@@ -55,7 +57,7 @@ const About = () => {
                     <div className="space-y-8">
                         <div>
                             <p className="mb-2 text-gray-500">
-                                Follow the band
+                                Follow the artist
                             </p>
                             <h1 className="text-4xl font-bold md:text-5xl">
                                 About The Artist

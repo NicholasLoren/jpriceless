@@ -7,9 +7,7 @@ const Blogs = ({ initialBlogPosts, hasMorePosts, currentPage, perPage }) => {
     const [blogPosts, setBlogPosts] = useState(initialBlogPosts?.data || []);
     const [hasMore, setHasMore] = useState(hasMorePosts);
     const [loading, setLoading] = useState(false);
-    const [page, setPage] = useState(currentPage);
-
-    console.log(blogPosts)
+    const [page, setPage] = useState(currentPage); 
 
     const loadMorePosts = async () => {
         setLoading(true);

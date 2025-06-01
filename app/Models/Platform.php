@@ -21,5 +21,10 @@ class Platform extends Model
         return parse_url($this->website_url, PHP_URL_HOST);
     }
 
-    
+    public function albums()
+    {
+        return $this->belongsToMany(Album::class, 'album_platforms')
+            ->withPivot('url')
+            ->withTimestamps();
+    }
 }

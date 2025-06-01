@@ -60,7 +60,7 @@ export default function BlogPostDetail({ post, relatedPosts = [] }) {
                         <BreadcrumbItem><span>{postDetails.title}</span>
                         </BreadcrumbItem></Breadcrumb>
                     </div>
-                    <h1 className="text-4xl font-bold text-black md:text-5xl">
+                    <h1 className="text-2xl font-bold text-black md:text-5xl">
                     {postDetails.title}
                     </h1>
                 </div>

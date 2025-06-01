@@ -7,6 +7,7 @@ use App\Services\AlbumService;
 use App\Services\ArtistService;
 use App\Services\GenreService;
 use App\Services\LabelService;
+use App\Services\PlatformService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -16,17 +17,21 @@ class AlbumController extends Controller
     protected $artistService;
     protected $genreService;
     protected $labelService;
+    protected $platformService;
+
 
     public function __construct(
         AlbumService $albumService,
         ArtistService $artistService,
         GenreService $genreService,
-        LabelService $labelService
+        LabelService $labelService,
+        PlatformService $platformService
     ) {
         $this->albumService = $albumService;
         $this->artistService = $artistService;
         $this->genreService = $genreService;
         $this->labelService = $labelService;
+        $this->platformService = $platformService;
     }
 
     /**
@@ -51,6 +56,7 @@ class AlbumController extends Controller
             'artists' => $this->artistService->all(),
             'genres' => $this->genreService->all(),
             'labels' => $this->labelService->all(),
+            'platforms' => $this->platformService->all(),
         ]);
     }
 
@@ -68,6 +74,9 @@ class AlbumController extends Controller
             'description' => 'required|string',  
             'is_featured' => 'required|boolean',
             'cover_art' => 'required|image|max:2048', // 2MB max
+            'platforms' => 'required|array|min:1',
+            'platforms.*.platform_id' => 'required|exists:platforms,id',
+            'platforms.*.url' => 'required|url',
         ]);
 
         $album = $this->albumService->create($validatedData);
@@ -78,6 +87,12 @@ class AlbumController extends Controller
                 ->toMediaCollection('cover_art');
         }
 
+        // Attach platforms with their URLs
+        foreach ($validatedData['platforms'] as $platform) {
+            $album->albumPlatforms()->attach($platform['platform_id'], [
+                'url' => $platform['url']
+            ]);
+        }
         return redirect()->route('albums.edit', $album)
                 ->with('success', 'Album created successfully!');
     }
@@ -87,8 +102,40 @@ class AlbumController extends Controller
      */
     public function show(Album $album)
     {
+        // Load the album with all necessary relationships
+        $album->load([
+            'artist',
+            'genre',
+            'label',
+            'albumPlatforms.platform',
+            'tracks' => function ($query) {
+                $query->orderBy('track_number')
+                    ->orderBy('created_at');
+            },
+            'tracks.artists' => function ($query) {
+                $query->orderBy('artist_track.order');
+            },
+            'media'
+        ]);
+
+        // Add cover art URLs if available
+        if ($album->hasMedia('cover_art')) {
+            $album->cover_art = [
+                'original_url' => $album->getFirstMediaUrl('cover_art'),
+                'thumb_url' => $album->getFirstMediaUrl('cover_art', 'thumb'),
+                'large_url' => $album->getFirstMediaUrl('cover_art', 'large'),
+            ];
+        }
+
+        // Add cover art URLs for tracks
+        $album->tracks->each(function ($track) {
+            if ($track->hasMedia('cover_art')) {
+                $track->cover_art_url = $track->getFirstMediaUrl('cover_art', 'thumb');
+            }
+        });
+
         return Inertia::render('Albums/Show', [
-            'album' => $album->load(['artist', 'genre', 'label']),
+            'album' => $album,
         ]);
     }
 
@@ -109,11 +156,20 @@ class AlbumController extends Controller
             ];
         }
 
+        // Format platforms for the form
+        $album->selected_platforms = $album->albumPlatforms->map(function ($platform) {
+            return [
+                'platform_id' => $platform->id,
+                'url' => $platform->pivot->url
+            ];
+        })->toArray();
+
         return Inertia::render('Albums/Form', [
             'album' => $album,
             'artists' => $this->artistService->all(),
             'genres' => $this->genreService->all(),
             'labels' => $this->labelService->all(),
+            'platforms' => $this->platformService->all(),
         ]);
     }
 
@@ -131,6 +187,9 @@ class AlbumController extends Controller
             'description' => 'nullable|string', 
             'is_featured' => 'boolean',
             'cover_art' => 'nullable|image|max:2048', // 2MB max
+            'platforms' => 'required|array|min:1',
+            'platforms.*.platform_id' => 'required|exists:platforms,id',
+            'platforms.*.url' => 'required|url',
         ]);
 
         $this->albumService->update($album, $validatedData);
@@ -144,6 +203,12 @@ class AlbumController extends Controller
                 ->toMediaCollection('cover_art');
         }
 
+        // Sync platforms with their URLs
+        $platformData = [];
+        foreach ($validatedData['platforms'] as $platform) {
+            $platformData[$platform['platform_id']] = ['url' => $platform['url']];
+        }
+        $album->albumPlatforms()->sync($platformData);
         return redirect()->route('albums.edit', $album)
                 ->with('success', 'Album updated successfully!');
     }

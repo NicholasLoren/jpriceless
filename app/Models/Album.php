@@ -25,7 +25,7 @@ class Album extends Model implements HasMedia
         'genre_id',
         'label_id',
         'description',
-        'release_date',  
+        'release_date',
         'is_featured',
     ];
 
@@ -36,7 +36,7 @@ class Album extends Model implements HasMedia
      */
     protected $casts = [
         'release_date' => 'date',
-        'is_featured' => 'boolean', 
+        'is_featured' => 'boolean',
     ];
 
     public function slugSourceField()
@@ -89,5 +89,20 @@ class Album extends Model implements HasMedia
     public function tracks()
     {
         return $this->hasMany(Track::class);
+    }
+
+    public function albumPlatforms()
+    {
+        return $this->hasMany(AlbumPlatform::class);
+    }
+
+    /**
+     * Get platforms through the AlbumPlatform model (many-to-many via intermediate model)
+     */
+    public function platforms()
+    {
+        return $this->belongsToMany(Platform::class, 'album_platforms', 'album_id', 'platform_id')
+            ->withPivot('url')
+            ->withTimestamps();
     }
 }
