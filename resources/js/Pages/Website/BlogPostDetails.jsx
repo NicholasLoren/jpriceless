@@ -1,66 +1,67 @@
 import WebsiteLayout from '@/Layouts/WebsiteLayout';
+import SocialShare from '@/Components/SocialShare'; // Using our custom component
+import { Head, Link } from '@inertiajs/react'; 
+import {formatDate } from '@/Utils/Date'; 
+import {Breadcrumb,
+    BreadcrumbItem} from 'flowbite-react'
+export default function BlogPostDetail({ post, relatedPosts = [] }) {
+    const postDetails = post?.data 
+    // Helper function to get featured image URL
+    const getFeaturedImageUrl = (post) => {
+        if (post.media && post.media.length > 0) {
+            const featuredImage = post.media.find(media => media.collection_name === 'featured_image');
+            return featuredImage ? featuredImage.original_url : '/images/blog-default.jpg';
+        }
+        return '/images/blog-default.jpg';
+    }; 
+    const featuredImageUrl = getFeaturedImageUrl(postDetails); 
+    const currentUrl = window.location.href;
 
-// Import React Icons
-import blogPosts from '@/data/blogPosts';
-import {
-    FaFacebookF,
-    FaLinkedinIn,
-    FaPinterestP,
-    FaTumblr,
-    FaTwitter,
-} from 'react-icons/fa';
-import { ImQuotesLeft } from 'react-icons/im';
-export default function BlogPostDetail() {
-    const post = {
-        id: 1,
-        title: 'Imagine and Create',
-        slug: 'imagine-and-create',
-        date: 'April 18, 2017',
-        category: 'Records',
-        featuredImage: 'https://picsum.photos/1200/600', // Update with actual path
-        content: [
-            'Alienum phaedrum torquatos nec eu, vis detraxit periculis ex, nihil expetendis in mei. Mei an pericula euripidis, hinc partem ei est. Eos ei nisl graecis, vix aperiri consequat an. Eius lorem tincidunt vix at, vel pertinax sensibus id, error epicurei mea et. Mea facilisis urbanitas moderatius id. Vis ei rationibus definiebas, eu qui purto zril laoreet. Ex error omnium interpretaris pro, alia illum ea vim.',
-            'Lorem ipsum dolor sit amet, te ridens gloriatur temporibus qui, per enim veritus probatus ad. Quo eu etiam exerci dolore, usu ne omnes referrentur. Ex eam diceret denique, ut eloquentiam efficiendi vel. Vix ea facilisis recteque, mel cu oratio sensibus abhorreant.',
-        ],
-        quote: 'Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.',
-        additionalContent: [
-            'Alienum phaedrum torquatos nec eu, vis detraxit periculis ex, nihil expetendis in mei. Mei an pericula euripidis, hinc partem ei est. Eos ei nisl graecis, vix aperiri consequat an. Eius lorem tincidunt vix at, vel pertinax sensibus id, error epicurei mea et. Mea facilisis urbanitas moderatius id. Vis ei rationibus definiebas, eu qui purto zril laoreet.',
-            'Ex error omnium interpretaris pro, alia illum ea vim. Lorem ipsum dolor sit amet, te ridens gloriatur temporibus qui, per enim veritus probatus ad. Quo eu etiam exerci dolore, usu ne omnes referrentur. Ex eam diceret denique, ut eloquentiam efficiendi vel. Vix ea facilisis recteque, mel cu oratio sensibus abhorreant.',
-        ],
-        tags: ['music', 'creativity', 'inspiration'],
-        author: {
-            name: 'John Doe',
-            avatar: '/path/to/avatar.jpg',
-            bio: 'Music producer and writer',
-        },
-        relatedPosts: [
-            {
-                id: 2,
-                title: 'The Future of Music Production',
-                slug: 'future-music-production',
-                featuredImage: '/path/to/related-post-1.jpg',
-                date: 'May 22, 2017',
-            },
-            {
-                id: 3,
-                title: 'How to Create a Hit Song',
-                slug: 'how-to-create-hit-song',
-                featuredImage: '/path/to/related-post-2.jpg',
-                date: 'June 15, 2017',
-            },
-        ],
-    };
     return (
         <WebsiteLayout headerPosition={'relative'}>
+            <Head title={postDetails.meta_title || postDetails.title} />
+            
+            {/* SEO Meta Tags */}
+            <Head>
+                <meta name="description" content={postDetails.meta_description || postDetails.excerpt} />
+                <meta property="og:title" content={postDetails.title} />
+                <meta property="og:description" content={postDetails.excerpt} />
+                <meta property="og:image" content={featuredImageUrl} />
+                <meta property="og:url" content={currentUrl} />
+                <meta property="og:type" content="article" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={postDetails.title} />
+                <meta name="twitter:description" content={postDetails.excerpt} />
+                <meta name="twitter:image" content={featuredImageUrl} />
+            </Head>
+
             {/* Header/Breadcrumb */}
             <div className="bg-gray-50 pb-12 pt-8">
                 <div className="container mx-auto px-4">
                     <div className="mb-2 text-gray-500">
-                        <span>Mixtape</span> / <span>Records</span> /{' '}
-                        <span>{post.title}</span>
+                        <Breadcrumb>
+                        <BreadcrumbItem>
+                        <Link href={route('home')} className="hover:text-gray-700">
+                            <span>Home</span>
+                        </Link>
+                        </BreadcrumbItem>  
+                        <BreadcrumbItem><Link href={route('blogs')} className="hover:text-gray-700">
+                            <span>Blog</span>
+                        </Link>
+                        </BreadcrumbItem>  
+                        <BreadcrumbItem>{postDetails.blog_category && (
+                            <>
+                                <span>{postDetails.blog_category.name}</span>
+                                
+                            </>
+                        )}
+                        </BreadcrumbItem>
+                        
+                        <BreadcrumbItem><span>{postDetails.title}</span>
+                        </BreadcrumbItem></Breadcrumb>
                     </div>
                     <h1 className="text-4xl font-bold text-black md:text-5xl">
-                        Blog
+                    {postDetails.title}
                     </h1>
                 </div>
             </div>
@@ -68,98 +69,111 @@ export default function BlogPostDetail() {
             {/* Blog Post Content */}
             <div className="container mx-auto px-4 py-8">
                 {/* Featured Image */}
-                <div className="mb-8">
+                <div className="mb-8 h-72">
                     <img
-                        src={post.featuredImage}
-                        alt={post.title}
-                        className="h-auto w-full"
+                        src={featuredImageUrl}
+                        alt={postDetails.title}
+                        className="h-full object-cover object-center w-full rounded-lg shadow-lg"
                     />
                 </div>
 
                 {/* Post Meta */}
-                <div className="mb-6">
-                    <span className="text-gray-500">{post.date}, </span>
-                    <span className="text-gray-500">{post.category}</span>
+                <div className="mb-6 flex flex-wrap items-center gap-4 text-gray-500">
+                    <span>By {postDetails.user.name}</span>
+                    {postDetails.blog_category && (
+                        <>
+                            <span>•</span>
+                            <span>{postDetails.blog_category.name}</span>
+                        </>
+                    )}
+                    {postDetails.user && (
+                        <>
+                            <span>•</span>
+                        <span>{formatDate(postDetails.published_at)}</span>
+                        </>
+                    )}
                 </div>
 
                 {/* Post Title */}
-                <h2 className="mb-8 text-4xl font-bold">{post.title}</h2>
+                <h2 className="mb-8 text-4xl font-bold leading-tight">{postDetails.title}</h2> 
 
                 {/* Post Content */}
-                <div className="mx-auto max-w-3xl">
-                    <div className="prose prose-lg mx-auto mb-10 leading-relaxed text-gray-600">
-                        {post.content.map((paragraph, index) => (
-                            <p key={index} className="mb-6">
-                                {paragraph}
-                            </p>
-                        ))}
-                    </div>
+                <div> 
 
-                    {/* Blockquote */}
-                    {post.quote && (
-                        <div className="relative my-12 border-l-4 border-black py-2 pl-6">
-                            <div className="absolute -ml-8 -mt-6 text-4xl text-gray-800">
-                                <ImQuotesLeft />
-                            </div>
-                            <blockquote className="mb-4 text-xl font-medium italic text-gray-800 md:text-2xl">
-                                {post.quote}
-                            </blockquote>
-                        </div>
+                    {/* If content has HTML, render it directly */}
+                    {postDetails.content && postDetails.content.includes('<') && (
+                        <div 
+                            className="prose prose-lg mx-auto mb-12 leading-relaxed text-gray-600"
+                            dangerouslySetInnerHTML={{ __html: postDetails.content }}
+                        />
                     )}
 
-                    {/* Additional Content */}
-                    <div className="prose prose-lg mx-auto mb-12 leading-relaxed text-gray-600">
-                        {post.additionalContent &&
-                            post.additionalContent.map((paragraph, index) => (
-                                <p key={index} className="mb-6">
-                                    {paragraph}
-                                </p>
-                            ))}
-                    </div>
-
-                    {/* Post Footer - Tags, Categories, Etc. */}
-                    <div className="flex flex-wrap items-center justify-between border-t border-gray-200 pb-12 pt-8">
+                    {/* Post Footer - Social Share */}
+                    <div className="flex flex-wrap items-center justify-between border-t border-gray-200 py-4">
                         <div className="mb-4 md:mb-0">
                             <span className="font-medium text-gray-700">
-                                Albums
+                                Share this article
                             </span>
                         </div>
 
-                        <div className="flex items-center space-x-3">
-                            <span className="text-gray-700">Share:</span>
-                            <div className="flex space-x-4">
-                                <a
-                                    href="#"
-                                    className="text-gray-500 hover:text-gray-800"
-                                >
-                                    <FaFacebookF />
-                                </a>
-                                <a
-                                    href="#"
-                                    className="text-gray-500 hover:text-gray-800"
-                                >
-                                    <FaTwitter />
-                                </a>
-                                <a
-                                    href="#"
-                                    className="text-gray-500 hover:text-gray-800"
-                                >
-                                    <FaLinkedinIn />
-                                </a>
-                                <a
-                                    href="#"
-                                    className="text-gray-500 hover:text-gray-800"
-                                >
-                                    <FaTumblr />
-                                </a>
-                                <a
-                                    href="#"
-                                    className="text-gray-500 hover:text-gray-800"
-                                >
-                                    <FaPinterestP />
-                                </a>
+                        <SocialShare
+                            url={currentUrl}
+                            title={postDetails.title}
+                            description={postDetails.excerpt}
+                            image={featuredImageUrl}
+                            hashtags={['blog', postDetails.blog_category?.name?.toLowerCase()].filter(Boolean)}
+                            size="md"
+                            style="minimal"
+                        />
+                    </div> 
+
+                    {/* Related Posts */}
+                    {relatedPosts && relatedPosts.length > 0 && (
+                        <div className="mt-16">
+                            <h3 className="mb-8 text-2xl font-bold">Related Articles</h3>
+                            <div className="grid gap-6 md:grid-cols-2">
+                                {relatedPosts.map((relatedPost) => (
+                                    <Link
+                                        key={relatedPost.id}
+                                        href={route('blogs.view-single', { blog: relatedPost.slug })}
+                                        className="group"
+                                    >
+                                        <div className="overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 hover:shadow-xl">
+                                            <div className="h-48 overflow-hidden">
+                                                <img
+                                                    src={getFeaturedImageUrl(relatedPost)}
+                                                    alt={relatedPost.title}
+                                                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                />
+                                            </div>
+                                            <div className="p-6">
+                                                <h4 className="mb-2 text-lg font-semibold group-hover:text-blue-600">
+                                                    {relatedPost.title}
+                                                </h4>
+                                                <p className="text-sm text-gray-500">
+                                                    {formatDate(relatedPost.published_at)}
+                                                </p>
+                                                {relatedPost.excerpt && (
+                                                    <p className="mt-2 text-gray-600 line-clamp-3">
+                                                        {relatedPost.excerpt}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
                             </div>
                         </div>
+                    )}
+
+                    {/* Navigation to previous/next post */}
+                    <div className="flex justify-between border-t pt-8">
+                        <Link 
+                            href={route('blogs')}
+                            className="inline-flex items-center text-blue-600 hover:text-blue-800"
+                        >
+                            ← Back to Blog
+                        </Link>
                     </div>
                 </div>
             </div>

@@ -44,6 +44,38 @@ class BlogPostService
                 return $album;
             });
     }
+
+    public function findAllPaginated($perPage = 6, $page = null)
+    {
+        return BlogPost::with(['user', 'blogCategory','media'])
+            ->whereNotNull('published_at')
+            ->orderBy('published_at', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
+    }
+
+
+    public function findBySlugWithRelations($slug)
+    {
+        return BlogPost::with(['user', 'blogCategory', 'media'])
+            ->where('slug', $slug)
+            ->whereNotNull('published_at')
+            ->firstOrFail();
+    }
+    
+    public function getRelatedPosts(BlogPost $post, $limit = 4)
+    {
+        return BlogPost::with(['user', 'blogCategory', 'media'])
+            ->where('id', '!=', $post->id)
+            ->whereNotNull('published_at')
+            ->when($post->blog_category_id, function ($query) use ($post) {
+                return $query->where('blog_category_id', $post->blog_category_id);
+            })
+            ->orderBy('published_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    
     public function all()
     {
         return BlogPost::orderBy('title')->get();
