@@ -25,14 +25,25 @@ Route::get('/about', [WebsiteController::class, 'about'])->name('about');
 Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
 Route::post('/contact', [WebsiteController::class, 'storeContact'])->name('contact.store');
 Route::get('/all-tours', [WebsiteController::class, 'tours'])->name('tours');
-Route::get('/all-tours/{tour:slug}', [WebsiteController::class, 'singleTour'])->name('tours.view-single');
-Route::get('/gallery', [WebsiteController::class, 'gallery'])->name('gallery');
+Route::get('/all-tours/{tour:slug}', [WebsiteController::class, 'singleTour'])->name('tours.view-single'); 
 Route::get('/blogs', [WebsiteController::class, 'blogs'])->name('blogs');
 Route::get('/blogs/{blog:slug}', [WebsiteController::class, 'singleBlog'])->name('blogs.view-single');
 Route::get('/discography', [WebsiteController::class, 'discography'])->name('discography');
 Route::get('/discography/{album:slug}', [WebsiteController::class, 'discography'])->name('discography.album');
 Route::get('/gallery', [WebsiteController::class, 'gallery'])->name('gallery'); 
 Route::get('/gallery/{gallery_album:slug}', [WebsiteController::class, 'galleryAlbum'])->name('gallery.album');
+
+Route::get('/all-tours', [WebsiteController::class, 'tours'])->name('tours');
+Route::get('/all-tours/{eventSlug}', [WebsiteController::class, 'singleTour'])->name('tours.view-single');
+
+
+
+
+
+
+
+
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

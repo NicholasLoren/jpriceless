@@ -13,6 +13,7 @@ import {
     Spinner,
     TextInput,
     Textarea,
+    HelperText,
 } from 'flowbite-react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -350,10 +351,25 @@ const Form = ({ event, tour }) => {
                                 </Label>
                                 <TextInput
                                     type="number"
+                                    step="any"
                                     id="latitude"
-                                    placeholder="Enter latitude"
+                                    placeholder="Enter latitude (e.g., 40.7128)"
                                     color={errors.latitude ? 'failure' : 'gray'}
-                                    {...register('latitude')}
+                                    min="-90"
+                                    max="90"
+                                    {...register('latitude', {
+                                        valueAsNumber: true,
+                                        validate: {
+                                            range: (value) => {
+                                                if (value === null || value === undefined || value === '') return true;
+                                                return (value >= -90 && value <= 90) || 'Latitude must be between -90 and 90';
+                                            },
+                                            isValid: (value) => {
+                                                if (value === null || value === undefined || value === '') return true;
+                                                return !isNaN(value) || 'Please enter a valid number';
+                                            }
+                                        }
+                                    })}
                                 />
                                 {errors.latitude && (
                                     <p className="mt-1 text-xs text-red-500">
@@ -369,12 +385,25 @@ const Form = ({ event, tour }) => {
                                 </Label>
                                 <TextInput
                                     type="number"
+                                    step="any"
                                     id="longitude"
-                                    placeholder="Enter longitude"
-                                    color={
-                                        errors.longitude ? 'failure' : 'gray'
-                                    }
-                                    {...register('longitude')}
+                                    placeholder="Enter longitude (e.g., -74.0059)"
+                                    color={errors.longitude ? 'failure' : 'gray'}
+                                    min="-180"
+                                    max="180"
+                                    {...register('longitude', {
+                                        valueAsNumber: true,
+                                        validate: {
+                                            range: (value) => {
+                                                if (value === null || value === undefined || value === '') return true;
+                                                return (value >= -180 && value <= 180) || 'Longitude must be between -180 and 180';
+                                            },
+                                            isValid: (value) => {
+                                                if (value === null || value === undefined || value === '') return true;
+                                                return !isNaN(value) || 'Please enter a valid number';
+                                            }
+                                        }
+                                    })}
                                 />
                                 {errors.longitude && (
                                     <p className="mt-1 text-xs text-red-500">
@@ -472,8 +501,7 @@ const Form = ({ event, tour }) => {
                                     {!isEditing && <Required />}
                                 </Label>
                                 <FileInput
-                                    id="featured_image"
-                                    helperText="JPG, JPEG or PNG (MAX. 2MB)"
+                                    id="featured_image" 
                                     color={
                                         errors.featured_image
                                             ? 'failure'
@@ -481,6 +509,7 @@ const Form = ({ event, tour }) => {
                                     }
                                     {...register('featured_image')}
                                 />
+                                <HelperText>JPG, JPEG or PNG (MAX. 2MB)</HelperText>
                                 {errors.featured_image && (
                                     <p className="mt-1 text-xs text-red-500">
                                         {errors.featured_image.message}

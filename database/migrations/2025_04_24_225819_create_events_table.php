@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('city');
             $table->string('country');
             $table->text('address')->nullable();
-            $table->integer('latitude')->nullable();
-            $table->integer('longitude')->nullable();
+            $table->double('latitude')->nullable();
+            $table->double('longitude')->nullable();
             $table->text('description')->nullable();
             $table->string('ticket_url')->nullable();
             $table->boolean('sold_out')->default(false);

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BlogPostResource;
 use App\Models\Album;
+use App\Models\Event;
 use App\Models\GalleryAlbum;
+use App\Models\Tour;
 use App\Services\BlogPostService;
 use App\Services\ContactFormService;
 use App\Services\AlbumService;
@@ -83,14 +85,134 @@ class WebsiteController extends Controller
         ]);
     }
 
-    public function tours()
+    public function tours(Request $request)
     {
-        return Inertia::render('Website/Tours');
+        // Get the tour slug from request (optional)
+        $tourSlug = $request->query('tour');
+        $currentTourIndex = 0;
+
+        // Get all active tours with their events
+        $tours = Tour::with([
+            'events' => function ($query) {
+                $query->orderBy('event_date', 'asc');
+            },
+            'media'
+        ])
+            ->where('is_active', true)
+            ->orderBy('start_date', 'desc')
+            ->get();
+
+        // Transform tours data for frontend
+        $transformedTours = $tours->map(function ($tour, $index) use ($tourSlug, &$currentTourIndex) {
+            // Set current tour index if slug matches
+            if ($tourSlug && $tour->slug === $tourSlug) {
+                $currentTourIndex = $index;
+            }
+
+            // Get featured image URL
+            $featuredImage = $tour->hasMedia('featured_image')
+                ? $tour->getFirstMediaUrl('featured_image', 'large')
+                : asset('images/default-tour-image.jpg');
+
+            // Transform events
+            $events = $tour->events->map(function ($event) {
+                $eventDate = $event->event_date;
+
+                return [
+                    'id' => $event->id,
+                    'slug' => $event->slug,
+                    'title' => $event->title,
+                    'venue' => $event->venue,
+                    'city' => $event->city,
+                    'country' => $event->country,
+                    'address' => $event->address,
+                    'date' => $eventDate?->format('d'),
+                    'month' => $eventDate?->format('M'),
+                    'day' => $eventDate?->format('D'),
+                    'fullDate' => $eventDate?->format('F j, Y'),
+                    'time' => $eventDate?->format('g:i A'),
+                    'location' => trim($event->city . ', ' . $event->country, ', '),
+                    'event' => $event->title,
+                    'ticketUrl' => $event->ticket_url,
+                    'soldOut' => $event->sold_out,
+                    'freeEntry' => $event->free_entry,
+                    'organizer' => $event->organizer,
+                    'description' => $event->description,
+                    'buyTickets' => !$event->sold_out && $event->ticket_url,
+                    'status' => $event->sold_out ? 'sold out' : ($event->free_entry ? 'free!' : 'available'),
+                    'featuredImage' => $event->hasMedia('featured_image')
+                        ? $event->getFirstMediaUrl('featured_image', 'large')
+                        : null
+                ];
+            });
+
+            return [
+                'id' => $tour->id,
+                'title' => $tour->title,
+                'slug' => $tour->slug,
+                'description' => $tour->description,
+                'startDate' => $tour->start_date ? $tour->start_date->format('F j, Y') : null,
+                'endDate' => $tour->end_date ? $tour->end_date->format('F j, Y') : null,
+                'featuredImage' => $featuredImage,
+                'events' => $events,
+                'eventCount' => $events->count()
+            ];
+        });
+
+        return Inertia::render('Website/Tours', [
+            'tours' => $transformedTours,
+            'currentTourIndex' => $currentTourIndex
+        ]);
     }
 
-    public function singleTour()
+    public function singleTour($eventSlug)
     {
-        return Inertia::render('Website/TourDetails');
+        // Find event by slug
+        $event = Event::with(['tour', 'media'])
+            ->where('slug', $eventSlug)
+            ->first();
+
+        if (!$event) {
+            abort(404, 'Event not found');
+        }
+
+        // Transform event data
+        $eventData = [
+            'id' => $event->id,
+            'title' => $event->title,
+            'slug' => $event->slug,
+            'venue' => $event->venue,
+            'city' => $event->city,
+            'country' => $event->country,
+            'address' => $event->address,
+            'latitude' => $event->latitude,
+            'longitude' => $event->longitude,
+            'eventDate' => $event->event_date?->format('F j, Y'),
+            'eventTime' => $event->event_date?->format('g:i A'),
+            'fullDateTime' => $event->event_date?->format('F j, Y g:i A'),
+            'location' => trim($event->city . ', ' . $event->country, ', '),
+            'fullAddress' => $event->address ? trim($event->address . ', ' . $event->city . ', ' . $event->country, ', ') : trim($event->city . ', ' . $event->country, ', '),
+            'description' => $event->description,
+            'ticketUrl' => $event->ticket_url,
+            'soldOut' => $event->sold_out,
+            'freeEntry' => $event->free_entry,
+            'organizer' => $event->organizer,
+            'featuredImage' => $event->hasMedia('featured_image')
+                ? $event->getFirstMediaUrl('featured_image', 'large')
+                : ($event->tour && $event->tour->hasMedia('featured_image')
+                    ? $event->tour->getFirstMediaUrl('featured_image', 'large')
+                    : asset('images/default-event-image.jpg')),
+            'tour' => $event->tour ? [
+                'id' => $event->tour->id,
+                'title' => $event->tour->title,
+                'slug' => $event->tour->slug,
+                'description' => $event->tour->description
+            ] : null
+        ];
+
+        return Inertia::render('Website/TourDetails', [
+            'event' => $eventData
+        ]);
     }
 
     public function gallery()
