@@ -1,18 +1,14 @@
 import AlbumDetail from '@/Components/AlbumDetail';
-import albumsData from '@/data/albumsData';
+import { Head } from '@inertiajs/react';
 
-export default function Discography() {
-    // You might get the current album ID from route params
-    // For example: const { albumId } = useParams();
-
-    // Find the index of the album to display initially
-    // This could come from route params, query params, etc.
-    const initialAlbumIndex = 0; // Default to first album
-
+export default function Discography({ albums, currentAlbumIndex = 0 }) { 
     return (
-        <AlbumDetail
-            albums={albumsData}
-            currentAlbumIndex={initialAlbumIndex}
-        />
+        <>
+            <Head title="Discography" />
+            <AlbumDetail
+                albums={albums}
+                currentAlbumIndex={currentAlbumIndex}
+            />
+        </>
     );
 }

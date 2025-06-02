@@ -157,7 +157,7 @@ class AlbumController extends Controller
         }
 
         // Format platforms for the form
-        $album->selected_platforms = $album->albumPlatforms->map(function ($platform) {
+        $album->selected_platforms = $album->platforms->map(function ($platform) {
             return [
                 'platform_id' => $platform->id,
                 'url' => $platform->pivot->url

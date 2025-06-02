@@ -22,6 +22,11 @@ class Track extends Model implements HasMedia
         'downloadable'
     ];
 
+    protected $casts = [
+        'purchasable' => 'boolean',
+        'downloadable' => 'boolean', 
+    ];
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('audio')

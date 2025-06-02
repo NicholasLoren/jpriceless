@@ -14,9 +14,9 @@ class AlbumService
      * @param string $search
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function findAll($perPage = 20, $search = '')
+    public function findAll($perPage = 20, $search = '', $page = 1)
     {
-        return Album::with(['artist', 'genre', 'label', 'media'])
+        return Album::with(['artist', 'genre', 'label', 'media', 'albumPlatforms.platform'])
             ->when($search, function (Builder $query, $search) {
                 $query->where('title', 'like', "%{$search}%")
                     ->orWhereHas('artist', function ($query) use ($search) {
@@ -30,7 +30,7 @@ class AlbumService
                     });
             })
             ->orderBy('created_at', 'desc')
-            ->paginate($perPage)
+            ->paginate($perPage, ['*'], 'page', $page)
             ->withQueryString()
             ->through(function ($album) {
                 // Add media URLs to the album

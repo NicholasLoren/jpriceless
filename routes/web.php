@@ -30,7 +30,7 @@ Route::get('/gallery', [WebsiteController::class, 'gallery'])->name('gallery');
 Route::get('/blogs', [WebsiteController::class, 'blogs'])->name('blogs');
 Route::get('/blogs/{blog:slug}', [WebsiteController::class, 'singleBlog'])->name('blogs.view-single');
 Route::get('/discography', [WebsiteController::class, 'discography'])->name('discography');
-
+Route::get('/discography/{album:slug}', [WebsiteController::class, 'discography'])->name('discography.album');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -61,4 +61,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('gallery-albums.gallery-images', GalleryImageController::class);
 });
 
+
+// API routes for AJAX album loading
+Route::group(['prefix' => 'api'], function () {
+    // Get specific page of albums
+    Route::get('/albums/page/{page}', [WebsiteController::class, 'getAlbumPage'])->name('api.albums.page');
+});
 require __DIR__ . '/auth.php';
