@@ -8,6 +8,7 @@ use App\Models\Album;
 use App\Models\Event;
 use App\Models\GalleryAlbum;
 use App\Models\Tour;
+use App\Models\Track;
 use App\Services\BlogPostService;
 use App\Services\ContactFormService;
 use App\Services\AlbumService;
@@ -28,11 +29,306 @@ class WebsiteController extends Controller
         $this->albumService = new AlbumService();
     }
 
+    // public function home()
+    // {
+    //     // Get featured albums for hero slider
+    //     $featuredAlbums = Album::with(['artist', 'genre', 'label', 'media'])
+    //         ->where('is_featured', true)
+    //         ->orderBy('release_date', 'desc')
+    //         ->take(5) // Limit to 5 featured albums for slider
+    //         ->get();
+
+    //     // Transform featured albums for slider
+    //     $sliderAlbums = $featuredAlbums->map(function ($album) {
+    //         return [
+    //             'id' => $album->id,
+    //             'title' => $album->title,
+    //             'slug' => $album->slug,
+    //             'artist' => $album->artist->name,
+    //             'label' => $album->label->name,
+    //             'genre' => $album->genre->name,
+    //             'releaseDate' => $album->release_date->format('F j, Y'),
+    //             'description' => $album->description,
+    //             'coverArt' => $album->hasMedia('cover_art')
+    //                 ? $album->getFirstMediaUrl('cover_art', 'large')
+    //                 : asset('images/default-album-cover.jpg'),
+    //             'backgroundImage' => $album->hasMedia('cover_art')
+    //                 ? $album->getFirstMediaUrl('cover_art', 'large')
+    //                 : asset('images/default-album-cover.jpg'),
+    //         ];
+    //     });
+
+    //     // Get latest albums (for the Latest Album/Releases section)
+    //     $latestAlbums = Album::with(['artist', 'genre', 'label', 'media'])
+    //         ->orderBy('release_date', 'desc')
+    //         ->take(6) // Show 6 latest albums
+    //         ->get();
+
+    //     // Transform latest albums
+    //     $transformedLatestAlbums = $latestAlbums->map(function ($album) {
+    //         return [
+    //             'id' => $album->id,
+    //             'title' => $album->title,
+    //             'slug' => $album->slug,
+    //             'artist' => $album->artist->name,
+    //             'label' => $album->label->name,
+    //             'genre' => $album->genre->name,
+    //             'releaseDate' => $album->release_date->format('F j, Y'),
+    //             'description' => $album->description,
+    //             'coverArt' => $album->hasMedia('cover_art')
+    //                 ? $album->getFirstMediaUrl('cover_art', 'large')
+    //                 : asset('images/default-album-cover.jpg'),
+    //         ];
+    //     });
+
+    //     // Get upcoming tour events for countdown and tour dates
+    //     $upcomingEvents = Event::with(['tour', 'media'])
+    //         ->where('event_date', '>', now())
+    //         ->orderBy('event_date', 'asc')
+    //         ->take(10) // Show next 10 events
+    //         ->get();
+
+    //     // Get the next event for countdown
+    //     $nextEvent = $upcomingEvents->first();
+
+    //     // Transform upcoming events for tour dates section
+    //     $tourDates = $upcomingEvents->map(function ($event) {
+    //         $eventDate = $event->event_date;
+
+    //         return [
+    //             'id' => $event->id,
+    //             'slug' => $event->slug,
+    //             'title' => $event->title,
+    //             'venue' => $event->venue,
+    //             'city' => $event->city,
+    //             'country' => $event->country,
+    //             'date' => $eventDate->format('d'),
+    //             'month' => $eventDate->format('M'),
+    //             'day' => $eventDate->format('D'),
+    //             'fullDate' => $eventDate->format('F j, Y'),
+    //             'time' => $eventDate->format('g:i A'),
+    //             'location' => trim($event->city . ', ' . $event->country, ', '),
+    //             'ticketUrl' => $event->ticket_url,
+    //             'soldOut' => $event->sold_out,
+    //             'freeEntry' => $event->free_entry,
+    //             'buyTickets' => !$event->sold_out && $event->ticket_url,
+    //             'status' => $event->sold_out ? 'sold out' : ($event->free_entry ? 'free!' : 'available'),
+    //         ];
+    //     });
+
+    //     // Get gallery albums for the gallery section
+    //     $galleryAlbums = GalleryAlbum::with(['media', 'images'])
+    //         ->where('is_public', true)
+    //         ->orderBy('created_at', 'desc')
+    //         ->take(8) // Show 8 gallery albums
+    //         ->get();
+
+    //     // Transform gallery albums
+    //     $transformedGalleryAlbums = $galleryAlbums->map(function ($album) {
+    //         // Get cover image URL
+    //         $coverImage = $album->hasMedia('cover_image')
+    //             ? $album->getFirstMediaUrl('cover_image', 'medium')
+    //             : ($album->images->count() > 0 && $album->images->first()->hasMedia('image')
+    //                 ? $album->images->first()->getFirstMediaUrl('image', 'medium')
+    //                 : asset('images/default-gallery-cover.jpg'));
+
+    //         return [
+    //             'id' => $album->id,
+    //             'title' => $album->title,
+    //             'slug' => $album->slug,
+    //             'description' => $album->description,
+    //             'coverImage' => $coverImage,
+    //             'imageCount' => $album->images->count()
+    //         ];
+    //     });
+
+    //     // Get latest blog posts
+    //     $latestBlogs = $this->blogPostService->findAllPaginated(3); // Get 3 latest blog posts
+
+    //     return Inertia::render('Website/Home', [
+    //         'featuredAlbums' => $sliderAlbums,
+    //         'latestAlbums' => $transformedLatestAlbums,
+    //         'nextEvent' => $nextEvent ? [
+    //             'id' => $nextEvent->id,
+    //             'title' => $nextEvent->title,
+    //             'venue' => $nextEvent->venue,
+    //             'city' => $nextEvent->city,
+    //             'country' => $nextEvent->country,
+    //             'location' => trim($nextEvent->city . ', ' . $nextEvent->country, ', '),
+    //             'eventDate' => $nextEvent->event_date->toISOString(), // For timer
+    //             'fullDateTime' => $nextEvent->event_date->format('F j, Y g:i A'),
+    //         ] : null,
+    //         'tourDates' => $tourDates,
+    //         'galleryAlbums' => $transformedGalleryAlbums,
+    //         'latestBlogs' => BlogPostResource::collection($latestBlogs->items()),
+    //     ]);
+    // }
     public function home()
     {
-        return Inertia::render('Website/Home');
-    }
+        // Get featured albums for hero slider
+        $featuredAlbums = Album::with(['artist', 'genre', 'label', 'media'])
+            ->where('is_featured', true)
+            ->orderBy('release_date', 'desc')
+            ->take(5) // Limit to 5 featured albums for slider
+            ->get(); 
+        // Transform featured albums for slider
+        $sliderAlbums = $featuredAlbums->map(function ($album) {
+            return [
+                'id' => $album->id,
+                'title' => $album->title,
+                'slug' => $album->slug,
+                'artist' => $album->artist->name,
+                'label' => $album->label->name,
+                'genre' => $album->genre->name,
+                'releaseDate' => $album->release_date->format('F j, Y'),
+                'description' => $album->description,
+                'coverArt' => $album->hasMedia('cover_art')
+                    ? $album->getFirstMediaUrl('cover_art', 'large')
+                    : asset('images/default-album-cover.jpg'),
+                'backgroundImage' => $album->hasMedia('cover_art')
+                    ? $album->getFirstMediaUrl('cover_art', 'large')
+                    : asset('images/default-album-cover.jpg'),
+            ];
+        });
 
+        // Get latest albums (for the Latest Album/Releases section)
+        $latestAlbums = Album::with(['artist', 'genre', 'label', 'media'])
+            ->orderBy('release_date', 'desc')
+            ->take(6) // Show 6 latest albums
+            ->get();
+
+        // Transform latest albums
+        $transformedLatestAlbums = $latestAlbums->map(function ($album) {
+            return [
+                'id' => $album->id,
+                'title' => $album->title,
+                'slug' => $album->slug,
+                'artist' => $album->artist->name,
+                'label' => $album->label->name,
+                'genre' => $album->genre->name,
+                'releaseDate' => $album->release_date->format('F j, Y'),
+                'description' => $album->description,
+                'coverArt' => $album->hasMedia('cover_art')
+                    ? $album->getFirstMediaUrl('cover_art', 'large')
+                    : asset('images/default-album-cover.jpg'),
+            ];
+        });
+
+        // Get latest songs (for audio player)
+        $latestSongs = Track::with(['artists', 'album.artist', 'media'])
+            ->whereHas('album') // Only tracks that belong to an album
+            ->orderBy('created_at', 'desc')
+            ->take(10) // Get 10 latest songs
+            ->get();
+
+        // Transform latest songs for audio player
+        $transformedSongs = $latestSongs->map(function ($track) {
+            return [
+                'id' => $track->id,
+                'title' => $track->title,
+                'artist' => $track->artists->pluck('name')->join(', ') ?: $track->album->artist->name,
+                'album' => $track->album->title,
+                'albumId' => $track->album->id,
+                'albumSlug' => $track->album->slug,
+                'duration' => $track->duration,
+                'trackNumber' => $track->track_number,
+                'audioUrl' => $track->hasMedia('audio')
+                    ? $track->getFirstMediaUrl('audio')
+                    : null,
+                'coverArt' => $track->hasMedia('cover_art')
+                    ? $track->getFirstMediaUrl('cover_art', 'thumb')
+                    : ($track->album->hasMedia('cover_art')
+                        ? $track->album->getFirstMediaUrl('cover_art', 'thumb')
+                        : asset('images/default-album-cover.jpg')),
+                'purchasable' => $track->purchasable,
+                'downloadable' => $track->downloadable,
+                'price' => $track->price,
+            ];
+        });
+
+        // Get upcoming tour events for countdown and tour dates
+        $upcomingEvents = Event::with(['tour', 'media'])
+            ->where('event_date', '>', now())
+            ->orderBy('event_date', 'asc')
+            ->take(10) // Show next 10 events
+            ->get();
+
+        // Get the next event for countdown
+        $nextEvent = $upcomingEvents->first();
+
+        // Transform upcoming events for tour dates section
+        $tourDates = $upcomingEvents->map(function ($event) {
+            $eventDate = $event->event_date;
+
+            return [
+                'id' => $event->id,
+                'slug' => $event->slug,
+                'title' => $event->title,
+                'venue' => $event->venue,
+                'city' => $event->city,
+                'country' => $event->country,
+                'date' => $eventDate?->format('d'),
+                'month' => $eventDate?->format('M'),
+                'day' => $eventDate?->format('D'),
+                'fullDate' => $eventDate?->format('F j, Y'),
+                'time' => $eventDate?->format('g:i A'),
+                'location' => trim($event->city . ', ' . $event->country, ', '),
+                'ticketUrl' => $event->ticket_url,
+                'soldOut' => $event->sold_out,
+                'freeEntry' => $event->free_entry,
+                'buyTickets' => !$event->sold_out && $event->ticket_url,
+                'status' => $event->sold_out ? 'sold out' : ($event->free_entry ? 'free!' : 'available'),
+            ];
+        });
+
+        // Get gallery albums for the gallery section
+        $galleryAlbums = GalleryAlbum::with(['media', 'images'])
+            ->where('is_public', true)
+            ->orderBy('created_at', 'desc')
+            ->take(8) // Show 8 gallery albums
+            ->get();
+
+        // Transform gallery albums
+        $transformedGalleryAlbums = $galleryAlbums->map(function ($album) {
+            // Get cover image URL
+            $coverImage = $album->hasMedia('cover_image')
+                ? $album->getFirstMediaUrl('cover_image', 'medium')
+                : ($album->images->count() > 0 && $album->images->first()->hasMedia('image')
+                    ? $album->images->first()->getFirstMediaUrl('image', 'medium')
+                    : asset('images/default-gallery-cover.jpg'));
+
+            return [
+                'id' => $album->id,
+                'title' => $album->title,
+                'slug' => $album->slug,
+                'description' => $album->description,
+                'coverImage' => $coverImage,
+                'imageCount' => $album->images->count()
+            ];
+        });
+
+        // Get latest blog posts
+        $latestBlogs = $this->blogPostService->findAllPaginated(3); // Get 3 latest blog posts
+
+        return Inertia::render('Website/Home', [
+            'featuredAlbums' => $sliderAlbums,
+            'latestAlbums' => $transformedLatestAlbums,
+            'latestSongs' => $transformedSongs,
+            'nextEvent' => $nextEvent ? [
+                'id' => $nextEvent->id,
+                'title' => $nextEvent->title,
+                'venue' => $nextEvent->venue,
+                'city' => $nextEvent->city,
+                'country' => $nextEvent->country,
+                'location' => trim($nextEvent->city . ', ' . $nextEvent->country, ', '),
+                'eventDate' => $nextEvent->event_date->toISOString(), // For timer
+                'fullDateTime' => $nextEvent->event_date->format('F j, Y g:i A'),
+            ] : null,
+            'tourDates' => $tourDates,
+            'galleryAlbums' => $transformedGalleryAlbums,
+            'latestBlogs' => BlogPostResource::collection($latestBlogs->items()),
+        ]);
+    }
     public function about()
     {
         return Inertia::render('Website/About');

@@ -1,8 +1,7 @@
 import HeroSlider from '@/Components/HeroSlider';
-import ImageGallery from '@/Components/ImageGallery';
 import WebsiteLayout from '@/Layouts/WebsiteLayout';
 import { HR } from 'flowbite-react';
-import { useTimer } from 'react-timer-hook';
+import { Link } from '@inertiajs/react';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/navigation';
@@ -10,83 +9,128 @@ import 'swiper/css/pagination';
 import AlbumGallery from './Partials/AlbumGallery';
 import BlogPostGrid from './Partials/BlogPostGrid';
 import TourDates from './Partials/TourDates';
-import images from '@/data/images';
-const Home = () => {
-    const expiryTimestamp = new Date('2025-06-16');
-    const { seconds, minutes, hours, days } = useTimer({
-        expiryTimestamp,
-        onExpire: () => console.warn('onExpire called'),
-        interval: 20,
-    });
-    
+import CountdownTimer from './Partials/CountdownTimer';
 
+const Home = ({ 
+    featuredAlbums = [], 
+    latestAlbums = [], 
+    latestSongs = [],
+    nextEvent = null, 
+    tourDates = [], 
+    galleryAlbums = [], 
+    latestBlogs = [] 
+}) => {
+    console.log(featuredAlbums)
     return (
-        <WebsiteLayout>
-            <HeroSlider />
+        <WebsiteLayout latestSongs={latestSongs}>
+            {/* Hero Slider with Featured Albums */}
+            <HeroSlider albums={featuredAlbums} latestSongs={latestSongs} />
 
-            <section className="flex flex-col items-center gap-4 bg-black py-24">
-                <h4 className="text-slate-600">
-                    Madison Square Garden, New York
-                </h4>
-                <h1 className="mb-4 text-4xl font-black text-white md:mb-12 md:text-5xl">
-                    Next Performance
-                </h1>
-                <div className="flex gap-4 sm:gap-12 md:gap-24">
-                    <div className="flex flex-col items-center">
-                        <h1 className="text-lg font-black text-white md:text-8xl">
-                            {days}
-                        </h1>
-                        <h4 className="text-md text-slate-600">Days</h4>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <h1 className="text-lg font-black text-white md:text-8xl">
-                            {hours}
-                        </h1>
-                        <h4 className="text-md text-slate-600">Hours</h4>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <h1 className="text-lg font-black text-white md:text-8xl">
-                            {minutes}
-                        </h1>
-                        <h4 className="text-md text-slate-600">Minutes</h4>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <h1 className="text-lg font-black text-white md:text-8xl">
-                            {seconds}
-                        </h1>
-                        <h4 className="text-md text-slate-600">Seconds</h4>
-                    </div>
-                </div>
-            </section>
+            {/* Countdown Section - Now a separate component */}
+            <CountdownTimer nextEvent={nextEvent} />
 
+            {/* Latest Albums Section */}
             <section className="py-16">
                 <div className="container mx-auto px-4">
-                    <h2 className="mb-8 text-2xl font-bold md:text-5xl">
+                    <h2 className="mb-8 text-2xl font-bold md:text-3xl">
                         Latest Album/Releases
                         <HR className="my-2 w-10 border-4 border-black" />
                     </h2>
-                    {/* Album grid or other content */}
-                    <AlbumGallery />
+                    <AlbumGallery albums={latestAlbums} />
                 </div>
             </section>
 
-            <section className="container mx-auto overflow-x-auto sm:overflow-x-hidden">
-                <TourDates />
-            </section>
-            <section className="container mx-auto">
-                <ImageGallery images={images} />
-            </section>
+            {/* Tour Dates Section */}
+            {tourDates.length > 0 && (
+                <section className="container mx-auto overflow-x-auto sm:overflow-x-hidden">
+                    <TourDates events={tourDates} />
+                </section>
+            )}
 
-            <section className="py-16">
-                <div className="container mx-auto px-4">
-                    <h2 className="mb-8 text-2xl font-bold md:text-5xl">
-                        Latest Blog Posts
-                        <HR className="my-2 w-10 border-4 border-black" />
-                    </h2>
-                    {/* Album grid or other content */}
-                    <BlogPostGrid />
-                </div>
-            </section>
+            {/* Gallery Section */}
+            {galleryAlbums.length > 0 && (
+                <section className="container mx-auto">
+                    <div className="px-4 py-8">
+                        <div className="flex justify-between items-center mb-8">
+                            <h2 className="text-2xl font-bold md:text-3xl">
+                                Gallery
+                                <HR className="my-2 w-10 border-4 border-black" />
+                            </h2>
+                            <Link
+                                href="/gallery"
+                                className="text-blue-600 hover:text-blue-800 font-medium"
+                            >
+                                View All →
+                            </Link>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {galleryAlbums.map((album) => (
+                                <div
+                                    key={album.id}
+                                    className="group cursor-pointer overflow-hidden rounded bg-white shadow-md transition-shadow duration-300 hover:shadow-xl"
+                                >
+                                    <Link href={`/gallery/${album.slug}`}>
+                                        {/* Image */}
+                                        <div className="h-48 overflow-hidden">
+                                            <img
+                                                src={album.coverImage}
+                                                alt={album.title}
+                                                className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                onError={(e) => {
+                                                    e.target.src = "https://picsum.photos/400/300?random=" + album.id;
+                                                }}
+                                            />
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="p-6">
+                                            <h2 className="mb-2 text-xl font-bold">
+                                                {album.title}
+                                            </h2>
+                                            {album.description && (
+                                                <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+                                                    {album.description}
+                                                </p>
+                                            )}
+
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm text-gray-500">
+                                                    {album.imageCount} {album.imageCount === 1 ? 'image' : 'images'}
+                                                </span>
+                                                <span className="text-sm font-medium text-blue-600 hover:text-blue-800">
+                                                    View Album →
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* Latest Blog Posts Section */}
+            {latestBlogs?.data?.length > 0 && (
+                <section className="py-16">
+                    <div className="container mx-auto px-4">
+                        <div className="flex justify-between items-center mb-8">
+                            <h2 className="text-2xl font-bold md:text-3xl">
+                                Latest Blog Posts
+                                <HR className="my-2 w-10 border-4 border-black" />
+                            </h2>
+                            <Link
+                                href="/blogs"
+                                className="text-blue-600 hover:text-blue-800 font-medium"
+                            >
+                                View All →
+                            </Link>
+                        </div>
+                        <BlogPostGrid posts={latestBlogs?.data} />
+                    </div>
+                </section>
+            )}
         </WebsiteLayout>
     );
 };
