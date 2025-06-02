@@ -20,19 +20,22 @@ const ImageGallery = ({ images }) => {
     }, []);
 
     // Format images for react-grid-gallery
-    const formattedImages = images.map((img) => ({
+    const formattedImages = images.map((img, idx) => ({
         src: img.src,
-        width: img?.width || 300, // Provide defaults to avoid undefined issues
-        height: img?.height || 200,
-        caption: img?.caption || '',
-        alt: img.alt || '',
+        width: img?.width || 320,
+        height: img?.height || 240,
+        caption: img?.caption || img?.title || '',
+        alt: img.alt || img?.title || `Gallery image ${idx + 1}`,
         // Optional properties
         thumbnail: img.thumbnail || img.src,
-        thumbnailWidth: img.thumbnailWidth || img.width || 300,
-        thumbnailHeight: img.thumbnailHeight || img.height || 200,
+        thumbnailWidth: img.thumbnailWidth || img.width || 320,
+        thumbnailHeight: img.thumbnailHeight || img.height || 240,
         tags: img.tags || [],
         isSelected: false,
         customOverlay: img.customOverlay,
+        // Store additional data for lightbox
+        description: img.description,
+        title: img.title
     }));
 
     const handleClick = (index) => {
@@ -51,34 +54,58 @@ const ImageGallery = ({ images }) => {
         setIndex((index + 1) % formattedImages.length);
     };
 
+    // Get current image data for lightbox
+    const getCurrentImage = () => {
+        if (index >= 0 && formattedImages[index]) {
+            return formattedImages[index];
+        }
+        return null;
+    };
+
+    const currentImage = getCurrentImage();
+
     return (
         <div className="gallery-container">
-            <Gallery
-                images={formattedImages}
-                onClick={handleClick}
-                enableImageSelection={false}
-                margin={5}
-                rowHeight={300}
-            />
+            {formattedImages.length > 0 ? (
+                <Gallery
+                    images={formattedImages}
+                    onClick={handleClick}
+                    enableImageSelection={false}
+                    margin={5}
+                    rowHeight={280}
+                />
+            ) : (
+                <div className="text-center py-8">
+                    <p className="text-gray-500">No images to display.</p>
+                </div>
+            )}
 
-            {index >= 0 && isLightboxReady && formattedImages.length > 0 && (
+            {index >= 0 && isLightboxReady && formattedImages.length > 0 && currentImage && (
                 <Lightbox
-                    mainSrc={formattedImages[index].src}
+                    mainSrc={currentImage.src}
                     nextSrc={
-                        formattedImages[(index + 1) % formattedImages.length]
-                            .src
+                        formattedImages[(index + 1) % formattedImages.length]?.src
                     }
                     prevSrc={
                         formattedImages[
-                            (index + formattedImages.length - 1) %
-                                formattedImages.length
-                        ].src
+                            (index + formattedImages.length - 1) % formattedImages.length
+                        ]?.src
                     }
                     onCloseRequest={handleClose}
                     onMovePrevRequest={handleMovePrev}
                     onMoveNextRequest={handleMoveNext}
-                    imageTitle={formattedImages[index].caption}
-                    imageCaption={formattedImages[index].caption}
+                    imageTitle={currentImage.title || currentImage.caption}
+                    imageCaption={
+                        currentImage.description 
+                            ? `${currentImage.title || currentImage.caption}${currentImage.title && currentImage.description ? ' - ' : ''}${currentImage.description}`
+                            : currentImage.title || currentImage.caption
+                    }
+                    imagePadding={40}
+                    reactModalStyle={{
+                        overlay: {
+                            zIndex: 1000
+                        }
+                    }}
                 />
             )}
         </div>

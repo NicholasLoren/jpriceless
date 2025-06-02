@@ -31,7 +31,8 @@ Route::get('/blogs', [WebsiteController::class, 'blogs'])->name('blogs');
 Route::get('/blogs/{blog:slug}', [WebsiteController::class, 'singleBlog'])->name('blogs.view-single');
 Route::get('/discography', [WebsiteController::class, 'discography'])->name('discography');
 Route::get('/discography/{album:slug}', [WebsiteController::class, 'discography'])->name('discography.album');
-
+Route::get('/gallery', [WebsiteController::class, 'gallery'])->name('gallery'); 
+Route::get('/gallery/{gallery_album:slug}', [WebsiteController::class, 'galleryAlbum'])->name('gallery.album');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

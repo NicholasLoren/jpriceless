@@ -25,7 +25,7 @@ class GalleryImage extends Model implements HasMedia
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'gallery_image_tag');
+        return $this->belongsToMany(Tag::class, 'gallery_image_tags');
     }
 
     public function registerMediaCollections(): void

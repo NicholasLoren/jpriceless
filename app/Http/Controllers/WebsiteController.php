@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BlogPostResource;
 use App\Models\Album;
+use App\Models\GalleryAlbum;
 use App\Services\BlogPostService;
 use App\Services\ContactFormService;
 use App\Services\AlbumService;
@@ -94,7 +95,80 @@ class WebsiteController extends Controller
 
     public function gallery()
     {
-        return Inertia::render('Website/Gallery');
+        // Get all public gallery albums with their cover images
+        $galleryAlbums = GalleryAlbum::with(['media', 'images'])
+            ->where('is_public', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Transform albums data for frontend
+        $transformedAlbums = $galleryAlbums->map(function ($album) {
+            // Get cover image URL
+            $coverImage = $album->hasMedia('cover_image')
+                ? $album->getFirstMediaUrl('cover_image', 'medium')
+                : ($album->images->count() > 0 && $album->images->first()->hasMedia('image')
+                    ? $album->images->first()->getFirstMediaUrl('image', 'medium')
+                    : asset('images/default-gallery-cover.jpg'));
+
+            return [
+                'id' => $album->id,
+                'title' => $album->title,
+                'slug' => $album->slug,
+                'description' => $album->description,
+                'coverImage' => $coverImage,
+                'imageCount' => $album->images->count()
+            ];
+        });
+
+        return Inertia::render('Website/Gallery', [
+            'galleryAlbums' => $transformedAlbums
+        ]);
+    }
+
+    public function galleryAlbum(GalleryAlbum $galleryAlbum)
+    {
+        // Check if album is public
+        if (!$galleryAlbum->is_public) {
+            abort(404);
+        }
+
+        // Load album with images and their media
+        $galleryAlbum->load(['images.media', 'images.tags', 'media']);
+
+        // Transform images for lightbox
+        $images = $galleryAlbum->images->map(function ($image) {
+            if (!$image->hasMedia('image')) {
+                return null;
+            }
+
+            return [
+                'id' => $image->id,
+                'src' => $image->getFirstMediaUrl('image', 'large'),
+                'thumbnail' => $image->getFirstMediaUrl('image', 'medium'),
+                'width' => 1920, // You can get actual dimensions from media if needed
+                'height' => 1080,
+                'caption' => $image->title,
+                'description' => $image->description,
+                'alt' => $image->title ?: 'Gallery image',
+                'tags' => $image->tags->pluck('name')->toArray()
+            ];
+        })->filter(); // Remove null values
+
+        // Album data
+        $albumData = [
+            'id' => $galleryAlbum->id,
+            'title' => $galleryAlbum->title,
+            'slug' => $galleryAlbum->slug,
+            'description' => $galleryAlbum->description,
+            'coverImage' => $galleryAlbum->hasMedia('cover_image')
+                ? $galleryAlbum->getFirstMediaUrl('cover_image', 'large')
+                : null
+        ];
+
+        return Inertia::render('Website/GalleryAlbum', [
+            'album' => $albumData,
+            'images' => $images
+        ]);
     }
 
     public function discography(Request $request)
