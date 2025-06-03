@@ -214,11 +214,7 @@ export default function HeroSlider({ albums = [], latestSongs = [] }) {
                         </div>
                     </>
                 )}
-
-                {/* Custom pagination dots */}
-                {slides.length > 1 && (
-                    <div className="swiper-pagination absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 transform space-x-2"></div>
-                )}
+ 
             </div>
 
             {/* Audio player bar */}

@@ -280,11 +280,13 @@ const Dashboard = ({
                         <div className="overflow-x-auto">
                             <Table hoverable>
                                 <TableHead>
-                                    <TableHeadCell>Name</TableHeadCell>
-                                    <TableHeadCell>Subject</TableHeadCell>
-                                    <TableHeadCell>Status</TableHeadCell>
-                                    <TableHeadCell>Received</TableHeadCell>
-                                    <TableHeadCell></TableHeadCell>
+                                    <TableRow>
+                                        <TableHeadCell>Name</TableHeadCell>
+                                        <TableHeadCell>Subject</TableHeadCell>
+                                        <TableHeadCell>Status</TableHeadCell>
+                                        <TableHeadCell>Received</TableHeadCell>
+                                        <TableHeadCell></TableHeadCell>
+                                    </TableRow>
                                 </TableHead>
                                 <TableBody className="divide-y">
                                     {recentContactForms.map((contact) => (
@@ -332,11 +334,13 @@ const Dashboard = ({
                         <div className="overflow-x-auto">
                             <Table hoverable>
                                 <TableHead>
-                                    <TableHeadCell>Title</TableHeadCell>
-                                    <TableHeadCell>Category</TableHeadCell>
-                                    <TableHeadCell>Status</TableHeadCell>
-                                    <TableHeadCell>Date</TableHeadCell>
-                                    <TableHeadCell></TableHeadCell>
+                                    <TableRow>
+                                        <TableHeadCell>Title</TableHeadCell>
+                                        <TableHeadCell>Category</TableHeadCell>
+                                        <TableHeadCell>Status</TableHeadCell>
+                                        <TableHeadCell>Date</TableHeadCell>
+                                        <TableHeadCell></TableHeadCell>
+                                    </TableRow>
                                 </TableHead>
                                 <TableBody className="divide-y">
                                     {recentBlogPosts.map((post) => (

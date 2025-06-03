@@ -49,17 +49,17 @@ const Index = ({ tours }) => {
         <AuthenticatedLayout>
             <Head title="Tours" />
             <div className="mx-auto flex max-w-7xl items-center p-4 md:justify-between">
-                <h4 className="hidden dark:text-white md:block">Albums</h4>
+                <h4 className="hidden dark:text-white md:block">Tours</h4>
                 <Breadcrumb aria-label="App breadcrumb">
                     <BreadcrumbItem icon={HiHome}>
                         <Link href={route('dashboard')}>Home</Link>
                     </BreadcrumbItem>
-                    <BreadcrumbItem>Albums</BreadcrumbItem>
+                    <BreadcrumbItem>Tours</BreadcrumbItem>
                 </Breadcrumb>
             </div>
             <div className="mx-auto max-w-7xl gap-4 overflow-hidden rounded-md bg-white shadow-lg dark:bg-gray-800">
                 <div className="flex items-center justify-between border-b bg-white p-2 dark:bg-gray-800">
-                    <h4 className="flex-grow dark:text-white">Albums</h4>
+                    <h4 className="flex-grow dark:text-white">Tours</h4>
                     <Button
                         size="xs"
                         as={Link}
