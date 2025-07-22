@@ -30,7 +30,7 @@ const ToolbarButton = ({ onClick, active, children }) => {
 };
 
 // The Tiptap editor component that integrates with React Hook Form
-const TiptapEditor = ({ name, control, defaultValue = '' }) => {
+const TipTapEditor = ({ name, control, defaultValue = '' }) => {
     // Using the useController hook from react-hook-form to register the editor
     const { field } = useController({
         name,
@@ -122,4 +122,4 @@ const TiptapEditor = ({ name, control, defaultValue = '' }) => {
     );
 };
 
-export default TiptapEditor;
+export default TipTapEditor;

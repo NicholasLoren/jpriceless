@@ -23,7 +23,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { HiHome, HiCalendar, HiExclamationCircle, HiCheck } from 'react-icons/hi';
 import * as yup from 'yup';
 import { route } from 'ziggy-js';
-import TiptapEditor from '@/Components/TiptapEditor';
+import TipTapEditor from '@/Components/TipTapEditor';
 
 const Form = ({ blogPost, blogCategories }) => {
     const isEditing = !!blogPost?.id; // Toggle edit mode if blog post is present
@@ -370,7 +370,7 @@ const Form = ({ blogPost, blogCategories }) => {
                                     name="content"
                                     control={control}
                                     render={({ field }) => (
-                                        <TiptapEditor 
+                                        <TipTapEditor 
                                             name="content" 
                                             control={control} 
                                             defaultValue={field.value} 
