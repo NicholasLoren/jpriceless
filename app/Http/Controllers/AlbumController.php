@@ -89,10 +89,11 @@ class AlbumController extends Controller
 
         // Attach platforms with their URLs
         foreach ($validatedData['platforms'] as $platform) {
-            $album->albumPlatforms()->attach($platform['platform_id'], [
+            $album->platforms()->attach($platform['platform_id'], [
                 'url' => $platform['url']
             ]);
         }
+
         return redirect()->route('albums.edit', $album)
                 ->with('success', 'Album created successfully!');
     }
